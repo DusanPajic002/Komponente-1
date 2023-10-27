@@ -8,10 +8,10 @@ import java.util.Date;
 @Setter
 public class TerminImpl2 extends Termin{
 
-    private LocalDate datumPocetak;
-    private LocalDate datumKraj;
+    private Date datumPocetak;
+    private Date datumKraj;
 
-    public TerminImpl2(Date vreme, Prostorija mesto) {
-        super(vreme, mesto);
+    public TerminImpl2(Date pocetak, Date kraj, Prostorija mesto) {
+        super(pocetak, kraj, mesto);
     }
 }
