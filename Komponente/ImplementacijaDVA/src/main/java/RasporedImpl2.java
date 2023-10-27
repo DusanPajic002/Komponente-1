@@ -1,4 +1,5 @@
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +12,12 @@ public class RasporedImpl2 extends RasporedAC{
     }
 
     @Override
-    public <T> T inicijalizacija(File file, String nazivRasporeda) {
+    public <T> T inicijalizacija(File file, String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo) {
         return null;
     }
 
     @Override
-    public <T> T inicijalizacija(List<String> kolone, String nazivRasporeda) {
+    public <T> T inicijalizacija(List<String> kolone, String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo) {
         return null;
     }
 
