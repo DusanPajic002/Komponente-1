@@ -1,27 +1,30 @@
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 @Getter
 @Setter
 public abstract class RasporedAC {
 
-    private List<Termin> termini;
+    private String nazivRasporeda;
     private List<Prostorija> prostorije;
+    private List<String> kolone;
 
     public RasporedAC() {
-        this.termini = new ArrayList<>();
         this.prostorije = new ArrayList<>();
+        kolone = new ArrayList<>();
     }
 
-    public abstract <T> T inicijalizacija();
+    public abstract <T> T inicijalizacija(File file,String nazivRasporeda);
+    public abstract <T> T inicijalizacija(List<String> kolone, String nazivRasporeda);
 
-    public abstract <T> T dodajProstoriju(Prostorija prostorija);
+    public abstract <T> T dodajProstoriju(Prostorija prostorija);//moze ovde
 
     public abstract <T> T dodajNovTermin(Termin termin); //treba da ide uz proveru o zauzetosti termina
 
-    public abstract <T> T brisanjeTermina(Termin termin);
+    public abstract <T> T brisanjeTermina(Termin termin);//mozda moze ovde
 
     public abstract <T> T premestanjeTermina(Termin termin, Termin terminDrugi);
 
