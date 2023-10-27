@@ -6,10 +6,10 @@ import java.util.Date;
 @Getter
 @Setter
 public class Termin {
-    private LocalDate vreme;
+    private Date vreme;
     private Prostorija mesto;
 
-    public Termin(LocalDate vreme, Prostorija mesto) {
+    public Termin(Date vreme, Prostorija mesto) {
         this.vreme = vreme;
         this.mesto = mesto;
     }
