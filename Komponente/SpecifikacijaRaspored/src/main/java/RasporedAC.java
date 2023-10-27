@@ -14,7 +14,7 @@ public abstract class RasporedAC {
 
     public RasporedAC() {
         this.prostorije = new ArrayList<>();
-        kolone = new ArrayList<>();
+        this.kolone = new ArrayList<>();
     }
 
     public abstract <T> T inicijalizacija(File file,String nazivRasporeda);

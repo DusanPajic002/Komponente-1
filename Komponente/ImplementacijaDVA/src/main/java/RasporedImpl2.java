@@ -7,7 +7,7 @@ public class RasporedImpl2 extends RasporedAC{
     private List<TerminImpl2> termini;
 
     public RasporedImpl2() {
-        termini = new ArrayList<>();
+        this.termini = new ArrayList<>();
     }
 
     @Override
