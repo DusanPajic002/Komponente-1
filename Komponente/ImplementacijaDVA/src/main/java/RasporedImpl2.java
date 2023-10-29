@@ -4,6 +4,7 @@ import org.apache.commons.csv.CSVRecord;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,12 +17,14 @@ public class RasporedImpl2 extends RasporedAC{
         this.termini = new ArrayList<>();
     }
     @Override
-    public <T> T inicijalizacija(File file, String nazivRasporeda, Date trajeOd, Date trajeDo) {
+    public <T> T inicijalizacija(File file, String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani) {
 
         Reader reader = null;
         int jedanProlazk=0;
+        this.setNazivRasporeda(nazivRasporeda);
         this.setTrajeOd(trajeOd);
         this.setTrajeDo(trajeDo);
+        this.setIzuzetiDani(izuzetiDani);
 
         try {
             reader = new FileReader(file);  CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
@@ -44,16 +47,17 @@ public class RasporedImpl2 extends RasporedAC{
             reader.close(); reader = new FileReader(file);   csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
             jedanProlazk=0;
             for (CSVRecord csvRecord : csvParser) {
-                if(jedanProlazk++ == 0){
+                if(jedanProlazk == 0){
                     for(int i=0; i<kolone; i++)
                         this.getKolone().add(csvRecord.get(i));
+                    jedanProlazk++;
                     continue;
                 }
-                List<String> termin = new ArrayList<>();
+                List<String> linija = new ArrayList<>();
                 for(int i=0; i<kolone;i++) {
-                    termin.add(csvRecord.get(i));
+                    linija.add(csvRecord.get(i));
                 }
-                dodajNovTermin(termin,false);
+                dodajNovTermin(linija,false);
             }
             System.out.println(this.getProstorije());
             System.out.println(this.getKolone());
@@ -63,30 +67,66 @@ public class RasporedImpl2 extends RasporedAC{
         return null;
     }
     @Override
-    public <T> T inicijalizacija(List<String> kolone, String nazivRasporeda, Date trajeOd, Date trajeDo) {
+    public <T> T inicijalizacija(List<String> kolone, String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani) {
+        this.setNazivRasporeda(nazivRasporeda);
+        this.setTrajeOd(trajeOd);
+        this.setTrajeDo(trajeDo);
+        this.setIzuzetiDani(izuzetiDani);
+        dodajNovTermin(kolone, true);
         return null;
     }
     @Override
-    public <T> T dodajNovTermin(List<String> termini, Boolean oznacenDatum) {
-        int duzina = termini.size();
+    public <T> T dodajNovTermin(List<String> linija, Boolean oznacenDatum) {
+        //System.out.println(termini);
+        int duzina = linija.size();
+        TerminImpl2 termin = null;
         Prostorija prostorija = null;
         for(int i=0;i<getProstorije().size()-1; i++)
-            if(termini.get(duzina-1).equals(getProstorije().get(i).getNazivProstorije()))
+            if(linija.get(duzina-1).equals(getProstorije().get(i).getNazivProstorije()))
                 prostorija = getProstorije().get(i);
-        Termin termin = null;
-        String vreme = termini.get(duzina-2);
-
+        List<String> vreme = napraviVreme(linija.get(duzina-2));
+        LocalTime satPoc = LocalTime.parse(vreme.get(0));
+        LocalTime satKraj = LocalTime.parse(vreme.get(1));
         if(oznacenDatum) {
-            termin = new Termin(null,null,prostorija);
-            for (int i = 0; i < duzina - 4; i++)
-                termin.getOstalo().add(termini.get(i));
+            termin = new TerminImpl2(satPoc,satKraj, prostorija ,this.getTrajeDo(),this.getTrajeDo());
+            for (int i = 0; i < duzina - 5; i++)
+                termin.getOstalo().add(linija.get(i));
+            termin.setDan(linija.get(duzina - 5));
         }else {
-            termin = new Termin(getTrajeOd(),getTrajeDo(),prostorija);
-            for (int i = 0; i < duzina - 6; i++)
-                termin.getOstalo().add(termini.get(i));
+            termin = new TerminImpl2(satPoc,satKraj, prostorija ,this.getTrajeDo(),this.getTrajeDo());
+            for (int i = 0; i < duzina - 3; i++)
+                termin.getOstalo().add(linija.get(i));
+            String danSpace = linija.get(duzina - 3);
+            StringBuilder dan = new StringBuilder();
+            for(int i=0 ;i < danSpace.length();i++)
+                if(danSpace.charAt(i) > 'A' && danSpace.charAt(i) < 'Z')
+                    dan.append(danSpace.charAt(i));
+            termin.setDan(dan.toString());
+            dan.delete(0,dan.length());
         }
-        System.out.println(termini);
+        this.termini.add(termin);
+        System.out.println(this.termini);
+
         return null;
+    }
+    public List<String> napraviVreme(String vreme){
+        List<String> parsirano = new ArrayList<>();
+        String[] delovi = vreme.split("-");
+
+        for(String deo : delovi){
+            if(deo.contains(":")){
+                if(deo.length() == 4)
+                    parsirano.add("0" + deo);
+                else
+                    parsirano.add(deo);
+            } else {
+                if(deo.length() == 1)
+                    parsirano.add("0" + deo + ":00");
+                else
+                    parsirano.add(deo + ":00");
+            }
+        }
+        return  parsirano;
     }
 
     @Override
