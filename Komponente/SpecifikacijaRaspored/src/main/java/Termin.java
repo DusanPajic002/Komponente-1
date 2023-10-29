@@ -2,6 +2,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,21 +11,21 @@ import java.util.List;
 @Setter
 public class Termin {
 
-    private Date pocetak;
-    private Date kraj;
+    private LocalTime satPocetka;
+    private LocalTime satKraja;
     private String dan;
     private Prostorija mesto;
     private List<String> ostalo;
 
-    public Termin(Date pocetak, Date kraj, Prostorija mesto) {
-        this.pocetak = pocetak;
-        this.kraj = kraj;
+    public Termin(LocalTime satPocetka, LocalTime satKraja, Prostorija mesto) {
+        this.satPocetka = satPocetka;
+        this.satKraja = satKraja;
         this.mesto = mesto;
         this.ostalo = new ArrayList<>();
     }
 
     @Override
     public String toString() {
-        return "Termin:" + " " + pocetak + " " + kraj + " " + dan + " " + mesto + " " + ostalo + "\n";
+        return "Termin:" + " " + satPocetka + " " + satKraja + " " + dan + " " + mesto + " " + ostalo + "\n";
     }
 }
