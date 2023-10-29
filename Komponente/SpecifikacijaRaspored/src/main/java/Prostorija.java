@@ -16,12 +16,6 @@ public class Prostorija {
         this.nazivProstorije = nazivProstorije;
         this.osobine = osobine;
     }
-
-    @Override
-    public String toString() {
-        return nazivProstorije + '\n';
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -29,5 +23,8 @@ public class Prostorija {
         Prostorija that = (Prostorija) o;
         return Objects.equals(nazivProstorije, that.nazivProstorije);
     }
-
+    @Override
+    public String toString() {
+        return nazivProstorije + ' ';
+    }
 }
