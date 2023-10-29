@@ -13,17 +13,18 @@ public abstract class RasporedAC {
     private String nazivRasporeda;
     private List<Prostorija> prostorije;
     private List<String> kolone;
-    private Date trajeOd;
-    private Date trajeDo;
+    private List<LocalDate> izuzetiDani;
+    private LocalDate trajeOd;
+    private LocalDate trajeDo;
 
     public RasporedAC() {
         this.prostorije = new ArrayList<>();
         this.kolone = new ArrayList<>();
+        this.izuzetiDani = new ArrayList<>();
     }
+    public abstract <T> T inicijalizacija(File file,String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani);
 
-    public abstract <T> T inicijalizacija(File file,String nazivRasporeda, Date trajeOd,Date trajeDo);
-
-    public abstract <T> T inicijalizacija(List<String> kolone, String nazivRasporeda, Date trajeOd,Date trajeDo);
+    public abstract <T> T inicijalizacija(List<String> kolone, String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani);
 
     public <T> T dodajProstoriju(Prostorija prostorija){
         if(!this.getProstorije().contains(prostorija)){
