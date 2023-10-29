@@ -24,9 +24,15 @@ public abstract class RasporedAC {
 
     public abstract <T> T inicijalizacija(List<String> kolone, String nazivRasporeda, LocalDate trajeOd,LocalDate trajeDo);
 
-    public abstract <T> T dodajProstoriju(Prostorija prostorija);//moze ovde
+    public <T> T dodajProstoriju(Prostorija prostorija){
+        if(!this.getProstorije().contains(prostorija)){
+            this.getProstorije().add(prostorija);
+            return null;
+        }
+        return null;
+    }
 
-    public abstract <T> T dodajNovTermin(Termin termin); //treba da ide uz proveru o zauzetosti termina
+    public abstract <T> T dodajNovTermin(List<String> termin); //treba da ide uz proveru o zauzetosti termina
 
     public abstract <T> T brisanjeTermina(Termin termin);//mozda moze ovde
 
