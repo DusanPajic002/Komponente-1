@@ -10,9 +10,9 @@ import java.util.Objects;
 public class Prostorija {
 
     private String nazivProstorije;
-    private List<Osobina> osobine = new ArrayList<>();
+    private List<Ostalo> osobine = new ArrayList<>();
 
-    public Prostorija (ArrayList<Osobina> osobine, String nazivProstorije){
+    public Prostorija (ArrayList<Ostalo> osobine, String nazivProstorije){
         this.nazivProstorije = nazivProstorije;
         this.osobine = osobine;
     }

@@ -14,14 +14,19 @@ public class Termin {
     private LocalTime satPocetka;
     private LocalTime satKraja;
     private String dan;
-    private Prostorija mesto;
-    private List<String> ostalo;
+    private String mesto;
+    private List<Ostalo> ostalo;
+    private LocalDate datumPocetak;
+    private LocalDate datumKraj;
 
-    public Termin(LocalTime satPocetka, LocalTime satKraja, Prostorija mesto) {
+    public Termin(LocalTime satPocetka, LocalTime satKraja, String dan, String mesto, LocalDate datumPocetak, LocalDate datumKraj) {
         this.satPocetka = satPocetka;
         this.satKraja = satKraja;
+        this.dan = dan;
         this.mesto = mesto;
-        this.ostalo = new ArrayList<>();
+        this.datumPocetak = datumPocetak;
+        this.datumKraj = datumKraj;
+        ostalo = new ArrayList<>();
     }
 
     @Override

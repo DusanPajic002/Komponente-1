@@ -11,20 +11,12 @@ import java.util.List;
 
 public class RasporedImpl2 extends RasporedAC{
 
-    private List<TerminImpl2> termini;
 
-    public RasporedImpl2() {
-        this.termini = new ArrayList<>();
-    }
     @Override
-    public <T> T inicijalizacija(File file, String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani) {
+    public <T> T CSVread(File file) {
 
         Reader reader = null;
         int jedanProlazk=0;
-        this.setNazivRasporeda(nazivRasporeda);
-        this.setTrajeOd(trajeOd);
-        this.setTrajeDo(trajeDo);
-        this.setIzuzetiDani(izuzetiDani);
 
         try {
             reader = new FileReader(file);  CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
@@ -37,12 +29,12 @@ public class RasporedImpl2 extends RasporedAC{
             for(CSVRecord prostorije:csvParser) {
                 if(jedanProlazk++ == 0)
                     continue;
-                dodajProstoriju(new Prostorija(null, prostorije.get(kolone - 1)));
+                dodajProstoriju(prostorije.get(kolone - 1));
             }
 
             reader.close(); reader = new FileReader(file);   csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
             for(CSVRecord prostorije:csvParser)
-              dodajProstoriju(new Prostorija(null, prostorije.get(kolone-1)));
+              dodajProstoriju(prostorije.get(kolone-1));
 
             reader.close(); reader = new FileReader(file);   csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
             jedanProlazk=0;
@@ -66,15 +58,12 @@ public class RasporedImpl2 extends RasporedAC{
         }
         return null;
     }
+
     @Override
-    public <T> T inicijalizacija(List<String> kolone, String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani) {
-        this.setNazivRasporeda(nazivRasporeda);
-        this.setTrajeOd(trajeOd);
-        this.setTrajeDo(trajeDo);
-        this.setIzuzetiDani(izuzetiDani);
-        dodajNovTermin(kolone, true);
+    public <T> T JSONread(File file) {
         return null;
     }
+
     @Override
     public <T> T dodajNovTermin(List<String> linija, Boolean oznacenDatum) {
         //System.out.println(termini);
