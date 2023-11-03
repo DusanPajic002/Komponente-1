@@ -12,4 +12,9 @@ public class Ostalo {
         this.kolona = kolona;
         this.vrednost = vrednost;
     }
+
+    @Override
+    public String toString() {
+        return  vrednost;
+    }
 }

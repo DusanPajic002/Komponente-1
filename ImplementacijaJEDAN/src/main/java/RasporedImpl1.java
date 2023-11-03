@@ -1,5 +1,6 @@
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.csv.CSVFormat;
@@ -25,8 +26,6 @@ public class RasporedImpl1 extends RasporedAC{
     //Kolona sa prostorijom je poslednja kolona, vreme jedna pre nje, dan dve pre, datum tri pre nje
     @Override
     public <T> T CSVread(File file) {
-
-
 
         BufferedReader reader = null;
         int brojKolona = 0;
@@ -80,8 +79,10 @@ public class RasporedImpl1 extends RasporedAC{
         return null;
     }
 
+    //Kolona sa prostorijom je poslednja kolona, vreme jedna pre nje, dan dve pre, datum tri pre nje
     @Override
     public <T> T JSONread(File file) {
+
         return null;
     }
 
@@ -90,39 +91,23 @@ public class RasporedImpl1 extends RasporedAC{
     @Override
     public <T> T dodajNovTermin(List<String> termin, Boolean oznacenDatum) {
 
-        //ZAVRSI PROVERE!!!!!!!!!!!!
         int brKolona = termin.size();
-        boolean ima = false;
-        for(String p : this.getProstorije()){
-            if(p.equals(termin.get(brKolona-1)))
-                ima = true;
-        }
-
-        if(ima){
-            List<String> zaOstalo = new ArrayList<>();
-            for(int i=0; i < brKolona - 4; i++){
-                zaOstalo.add(termin.get(i));
-            }
+            List<Ostalo> zaOstalo = new ArrayList<>();
+            for(int i=0; i < brKolona - 4; i++)
+                zaOstalo.add(new Ostalo(getKolone().get(i),termin.get(i)));
 
             // 11:00-13:00
             List<String> vreme = parsirajVreme(termin.get(brKolona-2));
             String dan = termin.get(brKolona-3);
             String dateString = termin.get(brKolona-4);
+            String prostorija = termin.get(brKolona-1);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             LocalDate date = LocalDate.parse(dateString, formatter);
 
-            Termin termin1 = new TerminImpl1(LocalTime.parse(vreme.get(0)),LocalTime.parse(vreme.get(1)),new Prostorija(null,termin.get(brKolona-1)));
+            Termin termin1 = new Termin(LocalTime.parse(vreme.get(0)),LocalTime.parse(vreme.get(1)),dan,prostorija,date,null);
             termin1.setOstalo(zaOstalo);
-            termin1.setDan(dan);
-            ((TerminImpl1)termin1).setDatum(date);
-            this.termini.add((TerminImpl1) termin1);
-
-            //jos datum
-        } else {
-            System.out.println("Ne postoji ovakva prostorija");
-            return null; //moglo bi da se napravi neki exception nesto za ovo
-        }
+            proveriTermin(termin1);
         return null;
     }
 
@@ -148,11 +133,41 @@ public class RasporedImpl1 extends RasporedAC{
 
     @Override
     public <T> T brisanjeTermina(Termin termin) {
+        if(getTermini().contains(termin))
+            getTermini().remove(termin);
         return null;
     }
 
     @Override
     public <T> T premestanjeTermina(Termin termin, Termin terminDrugi) {
+        brisanjeTermina(termin);
+        proveriTermin(terminDrugi);
         return null;
+    }
+
+    @Override
+    public boolean proveriTermin(Termin termin) {
+
+        if(!getProstorije().contains(termin.getMesto()))
+            return false;
+
+        List<Termin> saIstomProstorijom = new ArrayList<>();
+
+        for(Termin t : getTermini())
+            if(termin.getMesto().equals(t.getMesto()) && termin.getDatumPocetak().equals(t.getDatumPocetak()))
+                saIstomProstorijom.add(t);
+
+        boolean zauzet = false;
+        //start.isBefore(other.end) && end.isAfter(other.start)
+        for(Termin t : saIstomProstorijom)
+            if(t.getSatPocetka().isBefore(termin.getSatKraja()) && t.getSatKraja().isAfter(termin.getSatPocetka()))
+                zauzet = true;
+
+        if(zauzet == false)
+            getTermini().add(termin);
+        else
+            System.out.println("zauzet");
+
+        return zauzet;
     }
 }

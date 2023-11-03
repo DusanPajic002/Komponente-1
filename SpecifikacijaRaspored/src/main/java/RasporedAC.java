@@ -11,11 +11,11 @@ import java.util.List;
 public abstract class RasporedAC {
 
     private String nazivRasporeda;
+    private LocalDate trajeOd;
+    private LocalDate trajeDo;
     private List<String> prostorije;
     private List<String> kolone;
     private List<LocalDate> izuzetiDani;
-    private LocalDate trajeOd;
-    private LocalDate trajeDo;
     private List<Termin> termini;
 
     public RasporedAC() {
@@ -45,7 +45,12 @@ public abstract class RasporedAC {
 
     public abstract <T> T dodajNovTermin(List<String> termin, Boolean oznacenDatum); //treba da ide uz proveru o zauzetosti termina
 
-    public abstract <T> T brisanjeTermina(Termin termin);//mozda moze ovde
+    public <T> T brisanjeTermina(Termin termin) {
+        if(getTermini().contains(termin))
+            getTermini().remove(termin);
+        return null;
+    }
+    public abstract boolean proveriTermin(Termin termin);
 
     public abstract <T> T premestanjeTermina(Termin termin, Termin terminDrugi);
 

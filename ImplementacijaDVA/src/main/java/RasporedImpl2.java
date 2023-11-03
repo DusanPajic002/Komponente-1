@@ -1,20 +1,21 @@
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class RasporedImpl2 extends RasporedAC{
 
-
     @Override
     public <T> T CSVread(File file) {
-
         Reader reader = null;
         int jedanProlazk=0;
 
@@ -24,17 +25,12 @@ public class RasporedImpl2 extends RasporedAC{
             if (csvParser.iterator().hasNext()) {
                 kolone = csvParser.iterator().next().size();
             }
-
             reader.close(); reader = new FileReader(file);   csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
             for(CSVRecord prostorije:csvParser) {
                 if(jedanProlazk++ == 0)
                     continue;
                 dodajProstoriju(prostorije.get(kolone - 1));
             }
-
-            reader.close(); reader = new FileReader(file);   csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
-            for(CSVRecord prostorije:csvParser)
-              dodajProstoriju(prostorije.get(kolone-1));
 
             reader.close(); reader = new FileReader(file);   csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
             jedanProlazk=0;
@@ -53,6 +49,7 @@ public class RasporedImpl2 extends RasporedAC{
             }
             System.out.println(this.getProstorije());
             System.out.println(this.getKolone());
+            System.out.println(getTermini());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,38 +63,63 @@ public class RasporedImpl2 extends RasporedAC{
 
     @Override
     public <T> T dodajNovTermin(List<String> linija, Boolean oznacenDatum) {
-        //System.out.println(termini);
+
         int duzina = linija.size();
-        TerminImpl2 termin = null;
-        Prostorija prostorija = null;
-        for(int i=0;i<getProstorije().size()-1; i++)
-            if(linija.get(duzina-1).equals(getProstorije().get(i).getNazivProstorije()))
-                prostorija = getProstorije().get(i);
+        Termin termin = null;
+
         List<String> vreme = napraviVreme(linija.get(duzina-2));
         LocalTime satPoc = LocalTime.parse(vreme.get(0));
         LocalTime satKraj = LocalTime.parse(vreme.get(1));
-        if(oznacenDatum) {
-            termin = new TerminImpl2(satPoc,satKraj, prostorija ,this.getTrajeDo(),this.getTrajeDo());
-            for (int i = 0; i < duzina - 5; i++)
-                termin.getOstalo().add(linija.get(i));
-            termin.setDan(linija.get(duzina - 5));
-        }else {
-            termin = new TerminImpl2(satPoc,satKraj, prostorija ,this.getTrajeDo(),this.getTrajeDo());
-            for (int i = 0; i < duzina - 3; i++)
-                termin.getOstalo().add(linija.get(i));
-            String danSpace = linija.get(duzina - 3);
-            StringBuilder dan = new StringBuilder();
-            for(int i=0 ;i < danSpace.length();i++)
-                if(danSpace.charAt(i) > 'A' && danSpace.charAt(i) < 'Z')
-                    dan.append(danSpace.charAt(i));
-            termin.setDan(dan.toString());
-            dan.delete(0,dan.length());
-        }
-        this.termini.add(termin);
-        System.out.println(this.termini);
 
+        if(oznacenDatum) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate dP = LocalDate.parse(napraviDatum(linija.get(duzina-5)),formatter);
+            LocalDate dK = LocalDate.parse(napraviDatum(linija.get(duzina-4)),formatter);
+            termin = new Termin(satPoc, satKraj, pom(linija.get(duzina - 3)), linija.get(duzina-1), dP, dK);
+            for (int i = 0; i < duzina - 5; i++)
+                termin.getOstalo().add(new Ostalo(getKolone().get(i),linija.get(i)));
+        }else {
+            termin = new Termin(satPoc, satKraj, pom(linija.get(duzina - 3)), linija.get(duzina-1) ,this.getTrajeOd(),this.getTrajeDo());
+            for (int i = 0; i < duzina - 3; i++)
+                termin.getOstalo().add(new Ostalo(getKolone().get(i),linija.get(i)));
+        }
+        proveriTermin(termin);
         return null;
     }
+    private String pom(String danSpace){
+        System.out.println(danSpace);
+        StringBuilder dan = new StringBuilder();
+        for(int i=0 ;i < danSpace.length();i++)
+            if(danSpace.charAt(i) > 'A' && danSpace.charAt(i) < 'Z')
+                dan.append(danSpace.charAt(i));
+        return dan.toString();
+    }
+    @Override
+    public boolean proveriTermin(Termin termin) {
+        if(!this.getProstorije().contains(termin.getMesto()))
+            return false;
+        for (Termin ter: this.getTermini())
+            if (ter.getDan().equals(termin.getDan()) && ter.getMesto().equals(termin.getMesto())) {
+                if (!ter.getDatumKraj().isBefore(termin.getDatumPocetak()) &&
+                        !ter.getDatumPocetak().isAfter(termin.getDatumKraj())) {
+                    if (!ter.getSatKraja().isBefore(termin.getSatPocetka()) &&
+                            !ter.getSatPocetka().isAfter(termin.getSatKraja())) {
+                        System.out.println("zauzeto");
+                        return false;
+                    }
+                }
+            }
+        System.out.println("nije zauzeto");
+        this.getTermini().add(termin);
+        return true;
+    }
+    @Override
+    public <T> T premestanjeTermina(Termin termin, Termin terminDrugi) {
+        brisanjeTermina(termin);
+        proveriTermin(terminDrugi);
+        return null;
+    }
+
     public List<String> napraviVreme(String vreme){
         List<String> parsirano = new ArrayList<>();
         String[] delovi = vreme.split("-");
@@ -118,13 +140,21 @@ public class RasporedImpl2 extends RasporedAC{
         return  parsirano;
     }
 
-    @Override
-    public <T> T brisanjeTermina(Termin termin) {
-        return null;
+    public String napraviDatum(String datum){
+        String[] delovi = datum.split("-");
+        String dan =null;
+        String mesec =null;
+        if(delovi[0].length() == 1){
+            dan= "0" + delovi[0];
+        }else
+            dan = delovi[0];
+
+        if(delovi[1].length() == 1){
+            mesec = "0" + delovi[1];
+        }else
+            mesec =  delovi[1];
+        return dan + "-" + mesec + "-" + delovi[2];
     }
 
-    @Override
-    public <T> T premestanjeTermina(Termin termin, Termin terminDrugi) {
-        return null;
-    }
+
 }
