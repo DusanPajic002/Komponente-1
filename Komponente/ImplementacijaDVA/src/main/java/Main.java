@@ -1,23 +1,33 @@
-import javax.xml.crypto.Data;
 import java.io.File;
-import java.nio.file.Path;
-import java.text.DateFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
         RasporedAC rasporedAC = new RasporedImpl2();
-        File file = new File("C:\\Users\\Korisnik\\Komponente\\csv.csv");
+        File file = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\raspored.json");
         LocalDate pocetak = LocalDate.now();
         LocalDate kraj = LocalDate.now();
         rasporedAC.inicijalizacija("Test", pocetak, kraj,null);
-        rasporedAC.CSVread(file);
-        System.out.println(pocetak.getDayOfWeek());
-        System.out.println(kraj.getDayOfWeek());
+        rasporedAC.JSONread(file);
+
+        /*System.out.println("-------------------");
+        List<String> novTermin = new ArrayList<>();
+        novTermin.add("Linearna algebra");              //1
+        novTermin.add("V");                             //2
+        novTermin.add("Jovanovic Jelena");              //3
+        novTermin.add("101, 102, 103");                 //4
+        novTermin.add("1-8-2023");                      //5
+        novTermin.add("22-8-2023");                     //6
+        novTermin.add("ET");                            //7
+        novTermin.add("18:15-21:00");                   //8
+        novTermin.add("Raf20 (a)");                     //9
+        rasporedAC.dodajNovTermin(novTermin,true);
+        System.out.println(rasporedAC.getTermini());*/
+
+
     }
 }

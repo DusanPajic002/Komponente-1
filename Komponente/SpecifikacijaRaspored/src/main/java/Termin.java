@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -30,7 +31,21 @@ public class Termin {
     }
 
     @Override
-    public String toString() {
-        return "Termin:" + " " + satPocetka + " " + satKraja + " " + dan + " " + mesto + " " + ostalo + "\n";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Termin termin = (Termin) o;
+        return Objects.equals(satPocetka, termin.satPocetka) && Objects.equals(satKraja, termin.satKraja) && Objects.equals(dan, termin.dan) && Objects.equals(mesto, termin.mesto) && Objects.equals(datumPocetak, termin.datumPocetak) && Objects.equals(datumKraj, termin.datumKraj);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(satPocetka, satKraja, dan, mesto, ostalo, datumPocetak, datumKraj);
+    }
+
+    @Override
+    public String toString() {
+        return "Termin: " + ostalo + " | " + datumPocetak + " - " + datumKraj + " | " + satPocetka + " - " + satKraja + " | " + dan + " | "  + mesto + "|\n";
+    }
+
 }
