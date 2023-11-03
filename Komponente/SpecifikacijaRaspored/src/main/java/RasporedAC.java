@@ -11,22 +11,31 @@ import java.util.List;
 public abstract class RasporedAC {
 
     private String nazivRasporeda;
-    private List<Prostorija> prostorije;
+    private List<String> prostorije;
     private List<String> kolone;
     private List<LocalDate> izuzetiDani;
     private LocalDate trajeOd;
     private LocalDate trajeDo;
+    private List<Termin> termini;
 
     public RasporedAC() {
         this.prostorije = new ArrayList<>();
         this.kolone = new ArrayList<>();
         this.izuzetiDani = new ArrayList<>();
+        this.termini = new ArrayList<>();
     }
-    public abstract <T> T inicijalizacija(File file,String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani);
+    public abstract <T> T CSVread(File file);
+    public abstract <T> T JSONread(File file);
 
-    public abstract <T> T inicijalizacija(List<String> kolone, String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani);
+    public <T> T inicijalizacija(String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani){
+        this.setNazivRasporeda(nazivRasporeda);
+        this.setTrajeOd(trajeOd);
+        this.setTrajeDo(trajeDo);
+        this.setIzuzetiDani(izuzetiDani);
+        return null;
+    }
 
-    public <T> T dodajProstoriju(Prostorija prostorija){
+    public <T> T dodajProstoriju(String prostorija){
         if(!this.getProstorije().contains(prostorija)){
             this.getProstorije().add(prostorija);
             return null;

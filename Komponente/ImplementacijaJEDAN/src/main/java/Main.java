@@ -14,7 +14,8 @@ public class Main {
         LocalDate pocetak = null;
         LocalDate kraj = null;
 
-        raspored.inicijalizacija(file,"Raspored za RAF", pocetak, kraj, null);
+        raspored.inicijalizacija("aaa",pocetak,kraj,null);
+        raspored.CSVread(file);
 
         //System.out.println(raspored.getKolone());
         //System.out.println(raspored.getProstorije());

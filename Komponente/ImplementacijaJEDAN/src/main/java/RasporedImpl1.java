@@ -20,16 +20,11 @@ import java.util.List;
 @Setter
 public class RasporedImpl1 extends RasporedAC{
 
-    private List<TerminImpl1> termini;
-
-    public RasporedImpl1() {
-        this.termini = new ArrayList<>();
-    }
 
 
     //Kolona sa prostorijom je poslednja kolona, vreme jedna pre nje, dan dve pre, datum tri pre nje
     @Override
-    public <T> T inicijalizacija(File file, String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<Date> izuzetiDani) {
+    public <T> T CSVread(File file) {
 
 
 
@@ -52,7 +47,7 @@ public class RasporedImpl1 extends RasporedAC{
                     prviProlazak++;
                     continue;
                 }
-                dodajProstoriju(new Prostorija(null,csvRecord.get(brojKolona-1)));
+                dodajProstoriju(csvRecord.get(brojKolona-1));
             }
             System.out.println(this.getKolone());
             System.out.println(this.getProstorije());
@@ -86,14 +81,10 @@ public class RasporedImpl1 extends RasporedAC{
     }
 
     @Override
-    public <T> T inicijalizacija(List<String> kolone, String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<Date> izuzetiDani) {
-        this.setNazivRasporeda(nazivRasporeda);
-        this.setTrajeOd(trajeOd);
-        this.setTrajeDo(trajeDo);
-        this.setIzuzetiDani(izuzetiDani);
-        dodajNovTermin(kolone, true);
+    public <T> T JSONread(File file) {
         return null;
     }
+
 
 
     @Override
@@ -102,8 +93,8 @@ public class RasporedImpl1 extends RasporedAC{
         //ZAVRSI PROVERE!!!!!!!!!!!!
         int brKolona = termin.size();
         boolean ima = false;
-        for(Prostorija p : this.getProstorije()){
-            if(p.getNazivProstorije().equals(termin.get(brKolona-1)))
+        for(String p : this.getProstorije()){
+            if(p.equals(termin.get(brKolona-1)))
                 ima = true;
         }
 

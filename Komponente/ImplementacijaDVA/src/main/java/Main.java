@@ -15,7 +15,8 @@ public class Main {
         File file = new File("C:\\Users\\Korisnik\\Komponente\\csv.csv");
         LocalDate pocetak = LocalDate.now();
         LocalDate kraj = LocalDate.now();
-        rasporedAC.inicijalizacija(file,"Test", pocetak, kraj,null);
+        rasporedAC.inicijalizacija("Test", pocetak, kraj,null);
+        rasporedAC.CSVread(file);
         System.out.println(pocetak.getDayOfWeek());
         System.out.println(kraj.getDayOfWeek());
     }
