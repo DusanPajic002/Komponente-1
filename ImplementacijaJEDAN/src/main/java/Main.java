@@ -11,17 +11,18 @@ import java.util.List;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
-        RasporedAC raspored = new RasporedImpl1();
-        File file = new File("C:\\Users\\istojmirovic4521rn\\IdeaProjects\\Komponente-1\\raspored.json");
+        File file1 = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaJEDAN\\config");
+        RasporedAC raspored = new RasporedImpl1(file1);
+        File file = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\raspored111.csv");
         LocalDate pocetak = null;
         LocalDate kraj = null;
         //File file2 = new File("C:\\Users\\I L I J A\\Desktop\\json1.json");
 
-        //raspored.inicijalizacija("aaa",pocetak,kraj,null);
-        //raspored.CSVread(file);
-        raspored.JSONread(file);
+        raspored.inicijalizacija("aaa",pocetak,kraj,null);
+        raspored.CSVread(file);
+        //raspored.JSONread(file);
 
-        System.out.println(raspored.getKolone());
+        //System.out.println(raspored.getKolone());
         //System.out.println(raspored.getProstorije());
 
         System.out.println(raspored.getTermini());

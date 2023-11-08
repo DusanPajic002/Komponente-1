@@ -23,7 +23,9 @@ import java.util.Map;
 @Setter
 public class RasporedImpl1 extends RasporedAC{
 
-
+    public RasporedImpl1(File fileConfig) {
+        config(fileConfig);
+    }
 
     //Kolona sa prostorijom je poslednja kolona, vreme jedna pre nje, dan dve pre, datum tri pre nje
     @Override
@@ -105,7 +107,7 @@ public class RasporedImpl1 extends RasporedAC{
 
 
 
-    @Override
+    /*@Override
     public <T> T dodajNovTermin(List<String> termin) {
 
         int brKolona = termin.size();
@@ -125,6 +127,65 @@ public class RasporedImpl1 extends RasporedAC{
             Termin termin1 = new Termin(LocalTime.parse(vreme.get(0)),LocalTime.parse(vreme.get(1)),dan,prostorija,date,null);
             termin1.setOstalo(zaOstalo);
             proveriTermin(termin1);
+        return null;
+    }*/
+
+    @Override
+    public <T> T dodajNovTermin(List<String> linija) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalTime satPoc = null;
+        LocalTime satKraj = null;
+        LocalDate dK = null;
+        LocalDate dP = null;
+        String dan = null;
+        String prostorija = null;
+        List<Ostalo> ost = new ArrayList<>();
+
+        for(int i=0; i<linija.size();i++) {
+            String casee = "N";
+            Config cfg = null;
+            for(Config cus: this.getConfigs()){
+                if(cus.vratiOrginalIndex(i)) {
+                    casee = cus.getOriginal();
+                    cfg = cus;
+                    break;
+                }
+            }
+            if(casee.equals("N")) {
+                System.out.println("greska N");
+                return null;
+            }
+            switch (casee) {
+                case ("vreme"):{
+                    List<String> vreme = parsirajVreme(linija.get(cfg.getIndex()));
+                    satPoc = LocalTime.parse(vreme.get(0));
+                    satKraj = LocalTime.parse(vreme.get(1));
+                    break;
+                }case ("dan"):{
+                    dan = dan(linija.get(cfg.getIndex()));
+                    break;
+                }case ("prostorija"):{
+                    prostorija = linija.get(cfg.getIndex());
+                    break;
+                }case ("start"):{
+                    dP = LocalDate.parse(parsirajDatum(linija.get(cfg.getIndex())),formatter);
+                    if(dan == null)
+                        dan = String.valueOf(dP.getDayOfWeek());
+                    break;
+                }case ("end"):{
+                    dK = LocalDate.parse(parsirajDatum(linija.get(cfg.getIndex())),formatter);
+                    break;
+                }
+                default:{
+                    ost.add(new Ostalo(cfg.getCustom(), linija.get(cfg.getIndex())));
+                    break;
+                }
+            }
+        }
+        Termin t = new Termin(satPoc, satKraj, dan, prostorija, dP, dK);
+        t.setOstalo(ost);
+        proveriTermin(t);
         return null;
     }
 
@@ -146,6 +207,30 @@ public class RasporedImpl1 extends RasporedAC{
             }
         }
         return  parsirano;
+    }
+
+    public String parsirajDatum(String datum){
+        String[] delovi = datum.split("-");
+        String dan =null;
+        String mesec =null;
+        if(delovi[0].length() == 1){
+            dan= "0" + delovi[0];
+        }else
+            dan = delovi[0];
+
+        if(delovi[1].length() == 1){
+            mesec = "0" + delovi[1];
+        }else
+            mesec =  delovi[1];
+        return dan + "-" + mesec + "-" + delovi[2];
+    }
+
+    private String dan(String danSpace){
+        StringBuilder dan = new StringBuilder();
+        for(int i=0 ;i < danSpace.length();i++)
+            if(danSpace.charAt(i) > 'A' && danSpace.charAt(i) < 'Z')
+                dan.append(danSpace.charAt(i));
+        return dan.toString();
     }
 
     @Override
