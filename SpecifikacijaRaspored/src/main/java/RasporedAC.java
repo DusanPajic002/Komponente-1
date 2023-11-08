@@ -48,7 +48,7 @@ public abstract class RasporedAC {
         return null;
     }
 
-    public abstract <T> T dodajNovTermin(List<String> termin, Boolean oznacenDatum); //treba da ide uz proveru o zauzetosti termina
+    public abstract <T> T dodajNovTermin(List<String> termin); //treba da ide uz proveru o zauzetosti termina
 
     public <T> T brisanjeTermina(Termin termin) {
         if(getTermini().contains(termin))

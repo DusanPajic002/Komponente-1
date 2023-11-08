@@ -65,7 +65,7 @@ public class RasporedImpl1 extends RasporedAC{
                 for(int i=0; i<brojKolona; i++){
                     zaTermin.add(csvRecord.get(i));
                 }
-                dodajNovTermin(zaTermin, true);
+                dodajNovTermin(zaTermin);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,7 +93,7 @@ public class RasporedImpl1 extends RasporedAC{
                 if(prviprolazak++ == 0)
                     getKolone().addAll(appointmentData.keySet());
 
-                dodajNovTermin((List<String>) appointmentData.values(),true);
+                dodajNovTermin((List<String>) appointmentData.values());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -106,7 +106,7 @@ public class RasporedImpl1 extends RasporedAC{
 
 
     @Override
-    public <T> T dodajNovTermin(List<String> termin, Boolean oznacenDatum) {
+    public <T> T dodajNovTermin(List<String> termin) {
 
         int brKolona = termin.size();
             List<Ostalo> zaOstalo = new ArrayList<>();

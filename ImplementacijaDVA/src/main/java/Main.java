@@ -23,12 +23,12 @@ public class Main {
         novTermin.add("V");                             //2
         novTermin.add("Jovanovic Jelena");              //3
         novTermin.add("101, 102, 103");                 //4
-        novTermin.add("1-8-2023");                      //5
-        novTermin.add("22-8-2023");                     //6
+        //novTermin.add("1-8-2023");                      //5
+        //novTermin.add("22-8-2023");                     //6
         novTermin.add("ET");                            //7
         novTermin.add("18:15-21:00");                   //8
         novTermin.add("Raf20 (a)");                     //9
-        rasporedAC.dodajNovTermin(novTermin,true);
+        rasporedAC.dodajNovTermin(novTermin,false);
         System.out.println(rasporedAC.getTermini());*/
 
 

@@ -1,6 +1,8 @@
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 public class Config {
@@ -13,8 +15,23 @@ public class Config {
         this.original = original;
     }
 
+    public boolean vratiOrginalIndex(Integer index){
+        if(index == this.index)
+            return true;
+        return false;
+    }
+    public boolean vratiOrginalCustom(String custom){
+        if(Objects.equals(this.custom, custom))
+            return true;
+        return false;
+    }
+
     @Override
     public String toString() {
-        return " index: " + index + " custom: " + custom + " original: " + original + "\n";
+        return " " + index + " " + custom + " " + original + "\n";
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(index, custom, original);
     }
 }

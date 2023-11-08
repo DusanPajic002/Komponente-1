@@ -49,7 +49,7 @@ public class RasporedImpl2 extends RasporedAC{
                 for(int i=0; i<kolone;i++) {
                     linija.add(csvRecord.get(i));
                 }
-                dodajNovTermin(linija,false);
+                dodajNovTermin(linija);
             }
             System.out.println(this.getProstorije());
             System.out.println(this.getKolone());
@@ -81,7 +81,7 @@ public class RasporedImpl2 extends RasporedAC{
                 List<String> nov = new ArrayList<>();
                 nov.addAll(appointmentData.values());
 
-                dodajNovTermin(nov,false);
+                dodajNovTermin(nov);
             }
 
             System.out.println(this.getProstorije());
@@ -95,38 +95,70 @@ public class RasporedImpl2 extends RasporedAC{
     }
 
     @Override
-    public <T> T dodajNovTermin(List<String> linija, Boolean oznacenDatum) {
+    public <T> T dodajNovTermin(List<String> linija) {
 
-        int duzina = linija.size();
-        Termin termin = null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalTime satPoc = null;
+        LocalTime satKraj = null;
+        LocalDate dK = this.getTrajeOd();
+        LocalDate dP = this.getTrajeDo();
+        String dan = null;
+        String prostorija = null;
+        List<Ostalo> ost = new ArrayList<>();
 
-        List<String> vreme = napraviVreme(linija.get(duzina-2));
-        LocalTime satPoc = LocalTime.parse(vreme.get(0));
-        LocalTime satKraj = LocalTime.parse(vreme.get(1));
-
-        if(oznacenDatum) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDate dP = LocalDate.parse(napraviDatum(linija.get(duzina-5)),formatter);
-            LocalDate dK = LocalDate.parse(napraviDatum(linija.get(duzina-4)),formatter);
-            termin = new Termin(satPoc, satKraj, pom(linija.get(duzina - 3)), linija.get(duzina-1), dP, dK);
-            for (int i = 0; i < duzina - 5; i++)
-                termin.getOstalo().add(new Ostalo(getKolone().get(i),linija.get(i)));
-        }else {
-            termin = new Termin(satPoc, satKraj, pom(linija.get(duzina - 3)), linija.get(duzina-1) ,this.getTrajeOd(),this.getTrajeDo());
-            for (int i = 0; i < duzina - 3; i++)
-                termin.getOstalo().add(new Ostalo(getKolone().get(i),linija.get(i)));
+        for(int i=0; i<linija.size();i++) {
+            String casee = "N";
+            Config cfg = null;
+            for(Config cus: this.getConfigs()){
+                if(cus.vratiOrginalIndex(i)) {
+                    casee = cus.getOriginal();
+                    cfg = cus;
+                    break;
+                }
+            }
+            if(casee.equals("N")) {
+                System.out.println("greska N");
+                return null;
+            }
+            switch (casee) {
+                case ("vreme"):{
+                    List<String> vreme = napraviVreme(linija.get(cfg.getIndex()));
+                    satPoc = LocalTime.parse(vreme.get(0));
+                    satKraj = LocalTime.parse(vreme.get(1));
+                    break;
+                }case ("dan"):{
+                    dan = dan(linija.get(cfg.getIndex()));
+                    break;
+                }case ("prostorija"):{
+                    prostorija = linija.get(cfg.getIndex());
+                    break;
+                }case ("start"):{
+                    dP = LocalDate.parse(napraviDatum(linija.get(cfg.getIndex())),formatter);
+                    break;
+                }case ("end"):{
+                    dK = LocalDate.parse(napraviDatum(linija.get(cfg.getIndex())),formatter);
+                    break;
+                }
+                default:{
+                    ost.add(new Ostalo(cfg.getCustom(), linija.get(cfg.getIndex())));
+                    break;
+                }
+            }
         }
-        proveriTermin(termin);
+        Termin t = new Termin(satPoc, satKraj, dan, prostorija, dP, dK);
+        t.setOstalo(ost);
+        proveriTermin(t);
         return null;
     }
-    private String pom(String danSpace){
-        System.out.println(danSpace);
-        StringBuilder dan = new StringBuilder();
-        for(int i=0 ;i < danSpace.length();i++)
-            if(danSpace.charAt(i) > 'A' && danSpace.charAt(i) < 'Z')
-                dan.append(danSpace.charAt(i));
-        return dan.toString();
+
+    @Override
+    public <T> T premestanjeTermina(Termin termin, Termin terminDrugi) {
+        brisanjeTermina(termin);
+        proveriTermin(terminDrugi);
+        return null;
     }
+
+
     @Override
     public boolean proveriTermin(Termin termin) {
         if(!this.getProstorije().contains(termin.getMesto()))
@@ -137,22 +169,21 @@ public class RasporedImpl2 extends RasporedAC{
                         !ter.getDatumPocetak().isAfter(termin.getDatumKraj())) {
                     if (!ter.getSatKraja().isBefore(termin.getSatPocetka()) &&
                             !ter.getSatPocetka().isAfter(termin.getSatKraja())) {
-                        System.out.println("zauzeto");
                         return false;
                     }
                 }
             }
-        System.out.println("nije zauzeto");
         this.getTermini().add(termin);
         return true;
     }
-    @Override
-    public <T> T premestanjeTermina(Termin termin, Termin terminDrugi) {
-        brisanjeTermina(termin);
-        proveriTermin(terminDrugi);
-        return null;
-    }
 
+    private String dan(String danSpace){
+        StringBuilder dan = new StringBuilder();
+        for(int i=0 ;i < danSpace.length();i++)
+            if(danSpace.charAt(i) > 'A' && danSpace.charAt(i) < 'Z')
+                dan.append(danSpace.charAt(i));
+        return dan.toString();
+    }
     public List<String> napraviVreme(String vreme){
         List<String> parsirano = new ArrayList<>();
         String[] delovi = vreme.split("-");
@@ -188,6 +219,5 @@ public class RasporedImpl2 extends RasporedAC{
             mesec =  delovi[1];
         return dan + "-" + mesec + "-" + delovi[2];
     }
-
 
 }
