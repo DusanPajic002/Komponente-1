@@ -4,6 +4,8 @@ import lombok.Setter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +75,116 @@ public abstract class RasporedAC {
     public abstract boolean proveriTermin(Termin termin);
 
     public abstract <T> T premestanjeTermina(Termin termin, Termin terminDrugi);
+
+    public List<Termin> filtriraj(String kolona, String vrednost){
+        List<Termin> filtrirani = new ArrayList<>();
+
+        String casee = "N";
+        Config cfg = null;
+        for(Config cus: this.getConfigs()){
+            if(cus.vratiOrginalCustom(kolona)) {
+                casee = cus.getOriginal();
+                cfg = cus;
+                break;
+            }
+        }
+        //Profesor Jefimija
+        for (Termin t : termini){
+
+            switch (casee) {
+                case ("vreme"):{
+
+                    List<String> vreme = parsirajVreme(vrednost);
+                    LocalTime satPoc = LocalTime.parse(vreme.get(0));
+                    LocalTime satKraj = LocalTime.parse(vreme.get(1));
+
+                    if(satPoc.isBefore(t.getSatPocetka()) && satKraj.isAfter(t.getSatKraja()))
+                        filtrirani.add(t);
+                    break;
+                }case ("dan"):{
+                    if(t.getDan().equals(vrednost))
+                        filtrirani.add(t);
+                    break;
+                }case ("prostorija"):{
+                    if(t.getMesto().equals(vrednost))
+                        filtrirani.add(t);
+                    break;
+                }case ("start"):{
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    LocalDate dP = LocalDate.parse(parsirajDatum(vrednost),formatter);
+
+                    if(dP.isEqual(t.getDatumPocetak()))
+                        filtrirani.add(t);
+                    break;
+                }case ("end"):{
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    LocalDate dK = LocalDate.parse(parsirajDatum(vrednost),formatter);
+
+                    if(dK.isEqual(t.getDatumPocetak()))
+                        filtrirani.add(t);
+                    break;
+                }
+                default:{
+                    for(Ostalo ost : t.getOstalo()){
+                        if(ost.getVrednost().equals(vrednost))
+                            filtrirani.add(t);
+                    }
+                    break;
+                }
+            }
+        }
+
+        System.out.println("-----------------------------------------");
+        System.out.println(filtrirani);
+
+        return filtrirani;
+    }
+
+
+    public List<String> parsirajVreme(String vreme){
+        List<String> parsirano = new ArrayList<>();
+        String[] delovi = vreme.split("-");
+
+        for(String deo : delovi){
+            if(deo.contains(":")){
+                if(deo.length() == 4)
+                    parsirano.add("0" + deo);
+                else
+                    parsirano.add(deo);
+            } else {
+                if(deo.length() == 1)
+                    parsirano.add("0" + deo + ":00");
+                else
+                    parsirano.add(deo + ":00");
+            }
+        }
+        return  parsirano;
+    }
+
+    public String parsirajDatum(String datum){
+        String[] delovi = datum.split("-");
+        String dan =null;
+        String mesec =null;
+        if(delovi[0].length() == 1){
+            dan= "0" + delovi[0];
+        }else
+            dan = delovi[0];
+
+        if(delovi[1].length() == 1){
+            mesec = "0" + delovi[1];
+        }else
+            mesec =  delovi[1];
+        return dan + "-" + mesec + "-" + delovi[2];
+    }
+
+    public String dan(String danSpace){
+        StringBuilder dan = new StringBuilder();
+        for(int i=0 ;i < danSpace.length();i++)
+            if(danSpace.charAt(i) > 'A' && danSpace.charAt(i) < 'Z')
+                dan.append(danSpace.charAt(i));
+        return dan.toString();
+    }
+
 
     //Treba da odradimo nekako za filtriranje rasporeda
     //Ucitavanje i snimanje u fajl
