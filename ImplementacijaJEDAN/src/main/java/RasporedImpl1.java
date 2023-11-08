@@ -189,49 +189,6 @@ public class RasporedImpl1 extends RasporedAC{
         return null;
     }
 
-    public List<String> parsirajVreme(String vreme){
-        List<String> parsirano = new ArrayList<>();
-        String[] delovi = vreme.split("-");
-
-        for(String deo : delovi){
-            if(deo.contains(":")){
-                if(deo.length() == 4)
-                    parsirano.add("0" + deo);
-                else
-                    parsirano.add(deo);
-            } else {
-                if(deo.length() == 1)
-                    parsirano.add("0" + deo + ":00");
-                else
-                    parsirano.add(deo + ":00");
-            }
-        }
-        return  parsirano;
-    }
-
-    public String parsirajDatum(String datum){
-        String[] delovi = datum.split("-");
-        String dan =null;
-        String mesec =null;
-        if(delovi[0].length() == 1){
-            dan= "0" + delovi[0];
-        }else
-            dan = delovi[0];
-
-        if(delovi[1].length() == 1){
-            mesec = "0" + delovi[1];
-        }else
-            mesec =  delovi[1];
-        return dan + "-" + mesec + "-" + delovi[2];
-    }
-
-    private String dan(String danSpace){
-        StringBuilder dan = new StringBuilder();
-        for(int i=0 ;i < danSpace.length();i++)
-            if(danSpace.charAt(i) > 'A' && danSpace.charAt(i) < 'Z')
-                dan.append(danSpace.charAt(i));
-        return dan.toString();
-    }
 
     @Override
     public <T> T brisanjeTermina(Termin termin) {

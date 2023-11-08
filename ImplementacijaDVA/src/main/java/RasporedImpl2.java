@@ -122,7 +122,7 @@ public class RasporedImpl2 extends RasporedAC{
             }
             switch (casee) {
                 case ("vreme"):{
-                    List<String> vreme = napraviVreme(linija.get(cfg.getIndex()));
+                    List<String> vreme = parsirajVreme(linija.get(cfg.getIndex()));
                     satPoc = LocalTime.parse(vreme.get(0));
                     satKraj = LocalTime.parse(vreme.get(1));
                     break;
@@ -133,10 +133,10 @@ public class RasporedImpl2 extends RasporedAC{
                     prostorija = linija.get(cfg.getIndex());
                     break;
                 }case ("start"):{
-                    dP = LocalDate.parse(napraviDatum(linija.get(cfg.getIndex())),formatter);
+                    dP = LocalDate.parse(parsirajDatum(linija.get(cfg.getIndex())),formatter);
                     break;
                 }case ("end"):{
-                    dK = LocalDate.parse(napraviDatum(linija.get(cfg.getIndex())),formatter);
+                    dK = LocalDate.parse(parsirajDatum(linija.get(cfg.getIndex())),formatter);
                     break;
                 }
                 default:{
@@ -176,48 +176,4 @@ public class RasporedImpl2 extends RasporedAC{
         this.getTermini().add(termin);
         return true;
     }
-
-    private String dan(String danSpace){
-        StringBuilder dan = new StringBuilder();
-        for(int i=0 ;i < danSpace.length();i++)
-            if(danSpace.charAt(i) > 'A' && danSpace.charAt(i) < 'Z')
-                dan.append(danSpace.charAt(i));
-        return dan.toString();
-    }
-    public List<String> napraviVreme(String vreme){
-        List<String> parsirano = new ArrayList<>();
-        String[] delovi = vreme.split("-");
-
-        for(String deo : delovi){
-            if(deo.contains(":")){
-                if(deo.length() == 4)
-                    parsirano.add("0" + deo);
-                else
-                    parsirano.add(deo);
-            } else {
-                if(deo.length() == 1)
-                    parsirano.add("0" + deo + ":00");
-                else
-                    parsirano.add(deo + ":00");
-            }
-        }
-        return  parsirano;
-    }
-
-    public String napraviDatum(String datum){
-        String[] delovi = datum.split("-");
-        String dan =null;
-        String mesec =null;
-        if(delovi[0].length() == 1){
-            dan= "0" + delovi[0];
-        }else
-            dan = delovi[0];
-
-        if(delovi[1].length() == 1){
-            mesec = "0" + delovi[1];
-        }else
-            mesec =  delovi[1];
-        return dan + "-" + mesec + "-" + delovi[2];
-    }
-
 }
