@@ -1,5 +1,6 @@
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -82,6 +84,21 @@ public class RasporedImpl1 extends RasporedAC{
     //Kolona sa prostorijom je poslednja kolona, vreme jedna pre nje, dan dve pre, datum tri pre nje
     @Override
     public <T> T JSONread(File file) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            List<Map<String, String>> data = objectMapper.readValue(file, new TypeReference<List<Map<String, String>>>() {});
+            int prviprolazak = 0;
+            for (Map<String, String> appointmentData : data){
+                if(prviprolazak++ == 0)
+                    getKolone().addAll(appointmentData.keySet());
+
+                dodajNovTermin((List<String>) appointmentData.values(),true);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
 
         return null;
     }

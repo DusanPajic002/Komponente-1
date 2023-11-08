@@ -8,11 +8,13 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         RasporedAC rasporedAC = new RasporedImpl2();
-        File file = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\raspored.json");
+        File file = new File("C:\\Users\\istojmirovic4521rn\\IdeaProjects\\Komponente-1\\raspored.json");
         LocalDate pocetak = LocalDate.now();
         LocalDate kraj = LocalDate.now();
         rasporedAC.inicijalizacija("Test", pocetak, kraj,null);
         rasporedAC.JSONread(file);
+
+
 
         /*System.out.println("-------------------");
         List<String> novTermin = new ArrayList<>();

@@ -1,16 +1,16 @@
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RasporedImpl2 extends RasporedAC{
 
@@ -58,6 +58,35 @@ public class RasporedImpl2 extends RasporedAC{
 
     @Override
     public <T> T JSONread(File file) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            List<Map<String, String>> data = objectMapper.readValue(file, new TypeReference<List<Map<String, String>>>() {});
+            int prviprolazak = 0;
+
+
+            for (Map<String,String> appointmentData : data){
+                List<String> nov = new ArrayList<>();
+                nov.addAll(appointmentData.values());
+                dodajProstoriju(nov.get(nov.size()-1));
+            }
+            for (Map<String, String> appointmentData : data){
+                if(prviprolazak++ == 0)
+                    getKolone().addAll(appointmentData.keySet());
+
+                List<String> nov = new ArrayList<>();
+                nov.addAll(appointmentData.values());
+
+                dodajNovTermin(nov,false);
+            }
+
+            System.out.println(this.getProstorije());
+            System.out.println(this.getKolone());
+            System.out.println(getTermini());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         return null;
     }
 

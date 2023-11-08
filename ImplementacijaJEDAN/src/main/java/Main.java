@@ -12,16 +12,16 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         RasporedAC raspored = new RasporedImpl1();
-        File file = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\raspored1.csv");
+        File file = new File("C:\\Users\\istojmirovic4521rn\\IdeaProjects\\Komponente-1\\raspored.json");
         LocalDate pocetak = null;
         LocalDate kraj = null;
         //File file2 = new File("C:\\Users\\I L I J A\\Desktop\\json1.json");
 
-        raspored.inicijalizacija("aaa",pocetak,kraj,null);
-        raspored.CSVread(file);
-        //raspored.JSONread(file2);
+        //raspored.inicijalizacija("aaa",pocetak,kraj,null);
+        //raspored.CSVread(file);
+        raspored.JSONread(file);
 
-        //System.out.println(raspored.getKolone());
+        System.out.println(raspored.getKolone());
         //System.out.println(raspored.getProstorije());
 
         System.out.println(raspored.getTermini());
