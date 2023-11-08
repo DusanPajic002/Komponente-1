@@ -7,8 +7,9 @@ import java.util.List;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
-        RasporedAC rasporedAC = new RasporedImpl2();
-        File file = new File("C:\\Users\\istojmirovic4521rn\\IdeaProjects\\Komponente-1\\raspored.json");
+        File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komp\\ImplementacijaDVA\\config");
+        RasporedAC rasporedAC = new RasporedImpl2(cfg);
+        File file = new File("C:\\Users\\Korisnik\\Desktop\\Komp\\raspored.json");
         LocalDate pocetak = LocalDate.now();
         LocalDate kraj = LocalDate.now();
         rasporedAC.inicijalizacija("Test", pocetak, kraj,null);

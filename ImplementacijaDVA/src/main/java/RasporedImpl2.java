@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 public class RasporedImpl2 extends RasporedAC{
+    public RasporedImpl2(File fileConfig) {
+        config(fileConfig);
+        System.out.println(this.getConfigs());
+    }
 
     @Override
     public <T> T CSVread(File file) {

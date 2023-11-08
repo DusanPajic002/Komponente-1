@@ -2,10 +2,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
+
 @Getter
 @Setter
 public abstract class RasporedAC {
@@ -17,12 +20,14 @@ public abstract class RasporedAC {
     private List<String> kolone;
     private List<LocalDate> izuzetiDani;
     private List<Termin> termini;
+    private List<Config> configs;
 
     public RasporedAC() {
         this.prostorije = new ArrayList<>();
         this.kolone = new ArrayList<>();
         this.izuzetiDani = new ArrayList<>();
         this.termini = new ArrayList<>();
+        this.configs = new ArrayList<>();
     }
     public abstract <T> T CSVread(File file);
     public abstract <T> T JSONread(File file);
@@ -49,6 +54,21 @@ public abstract class RasporedAC {
         if(getTermini().contains(termin))
             getTermini().remove(termin);
         return null;
+    }
+
+    public void config(File file){
+        try {
+            Scanner scanner = null;
+            scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] splitLine = line.split(" ", 3);
+                this.configs.add(new Config(Integer.valueOf(splitLine[0]), splitLine[1], splitLine[2]));
+            }
+            scanner.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     public abstract boolean proveriTermin(Termin termin);
 
