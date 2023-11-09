@@ -50,7 +50,7 @@ public abstract class RasporedAC {
         return null;
     }
 
-    public abstract <T> T dodajNovTermin(List<String> termin); //treba da ide uz proveru o zauzetosti termina
+    public abstract <T> T dodajNovTermin(List<String> termin);
 
     public <T> T brisanjeTermina(Termin termin) {
         if(getTermini().contains(termin))
@@ -74,7 +74,7 @@ public abstract class RasporedAC {
     }
     public abstract boolean proveriTermin(Termin termin);
 
-    public abstract <T> T premestanjeTermina(Termin termin, Termin terminDrugi);
+    public abstract  <T> T premestanjeTermina(Termin termin, String kolona, String vrednost);
 
     public List<Termin> filtriraj(String kolona, String vrednost){
         List<Termin> filtrirani = new ArrayList<>();
@@ -88,9 +88,9 @@ public abstract class RasporedAC {
                 break;
             }
         }
-        //Profesor Jefimija
+        if(casee.equals("N"))
+            return null;
         for (Termin t : termini){
-
             switch (casee) {
                 case ("vreme"):{
 

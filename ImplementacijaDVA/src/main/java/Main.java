@@ -1,24 +1,19 @@
 import java.io.File;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
-        //File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komp\\ImplementacijaDVA\\config");
-        File cfg = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaDVA\\config");
+        File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komp\\ImplementacijaDVA\\config");
+        //File cfg = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaDVA\\config");
         RasporedAC rasporedAC = new RasporedImpl2(cfg);
-        //File file = new File("C:\\Users\\Korisnik\\Desktop\\Komp\\raspored.json");
-        File file = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\raspored.json");
+        File file = new File("C:\\Users\\Korisnik\\Desktop\\Komp\\raspored.json");
+        //File file = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\raspored.json");
         LocalDate pocetak = LocalDate.now();
         LocalDate kraj = LocalDate.now();
         rasporedAC.inicijalizacija("Test", pocetak, kraj,null);
         rasporedAC.JSONread(file);
         rasporedAC.filtriraj("Vreme", "11:14-17:01");
-
-
+        Termin t = rasporedAC.getTermini().get(0);
+        rasporedAC.premestanjeTermina(t,"U?ionica","Kolarac2");
 
         /*System.out.println("-------------------");
         List<String> novTermin = new ArrayList<>();
