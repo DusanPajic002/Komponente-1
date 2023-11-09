@@ -75,6 +75,11 @@ public abstract class RasporedAC {
     public abstract boolean proveriTermin(Termin termin);
 
     public abstract  <T> T premestanjeTermina(Termin termin, String kolona, String vrednost);
+    public <T> T premestanjeTermina(Termin stari, Termin novi){
+        termini.remove(stari);
+        proveriTermin(novi);
+        return null;
+    }
 
     public List<Termin> filtriraj(String kolona, String vrednost){
         List<Termin> filtrirani = new ArrayList<>();
