@@ -18,6 +18,8 @@ public abstract class RasporedAC {
     private String nazivRasporeda;
     private LocalDate trajeOd;
     private LocalDate trajeDo;
+    private LocalTime poctakRadnogVremena;
+    private LocalTime krajRadnogVremena;
     private List<String> prostorije;
     private List<String> kolone;
     private List<LocalDate> izuzetiDani;
@@ -34,11 +36,13 @@ public abstract class RasporedAC {
     public abstract <T> T CSVread(File file);
     public abstract <T> T JSONread(File file);
 
-    public <T> T inicijalizacija(String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani){
+    public <T> T inicijalizacija(String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani,LocalTime pocetakRadnogVremena, LocalTime krajRadnogVremena){
         this.setNazivRasporeda(nazivRasporeda);
         this.setTrajeOd(trajeOd);
         this.setTrajeDo(trajeDo);
         this.setIzuzetiDani(izuzetiDani);
+        this.setPoctakRadnogVremena(pocetakRadnogVremena);
+        this.setKrajRadnogVremena(krajRadnogVremena);
         return null;
     }
 
