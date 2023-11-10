@@ -1,15 +1,15 @@
 import lombok.Getter;
 import lombok.Setter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 @Getter
 @Setter
@@ -51,6 +51,38 @@ public abstract class RasporedAC {
     }
 
     public abstract <T> T dodajNovTermin(List<String> termin);
+
+    public  <T> T JsonWriter(File filename) {
+        JSONArray jsonArray = new JSONArray();
+        try{
+            for(Termin t: this.termini){
+                Map<String, Object> orderedData = new LinkedHashMap<>();
+                int k = 0;
+                int sizeOs = t.getOstalo().size();
+                for(int i=0; i < sizeOs; i++)
+                    orderedData.put(t.getOstalo().get(i).getKolona(), t.getOstalo().get(i).getVrednost());
+
+                if(t.getDatumPocetak() != null && !t.getDatumPocetak().isEqual(trajeOd) && t.getDatumKraj() != null) {
+                    orderedData.put(kolone.get(sizeOs + k++), t.getDatumPocetak());
+                    orderedData.put(kolone.get(sizeOs + k++), t.getDatumKraj());
+                }
+                else if(t.getDatumPocetak() != null && !t.getDatumPocetak().isEqual(trajeOd))
+                    orderedData.put(kolone.get(sizeOs + k++), t.getDatumPocetak());
+
+                orderedData.put(kolone.get(sizeOs + k++), t.getDan());
+                orderedData.put(kolone.get(sizeOs + k++), t.getSatPocetka() + "-" + t.getSatKraja());
+                orderedData.put(kolone.get(sizeOs + k), t.getMesto());
+                jsonArray.add(orderedData);
+
+            }
+            FileWriter file = new FileWriter(filename);
+            file.write(jsonArray.toString());
+            file.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public <T> T brisanjeTermina(Termin termin) {
         if(getTermini().contains(termin))
