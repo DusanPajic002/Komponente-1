@@ -1,5 +1,7 @@
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -85,6 +87,39 @@ public abstract class RasporedAC {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    public  <T> T CsvWriter(String path) throws IOException {
+        FileWriter fileWriter = new FileWriter(path);
+        CSVPrinter csvPrinter = new CSVPrinter(fileWriter, CSVFormat.DEFAULT);
+
+        csvPrinter.printRecord(getKolone());
+
+        for(Termin termin: getTermini()){
+            List<Object> upis = new ArrayList<>();
+
+            for(int i=0; i< termin.getOstalo().size(); i++){
+                upis.add(termin.getOstalo().get(i).getVrednost());
+            }
+
+            if(termin.getDatumPocetak() != null && !termin.getDatumPocetak().isEqual(trajeOd) && termin.getDatumKraj() != null) {
+                upis.add(termin.getDatumPocetak());
+                upis.add(termin.getDatumKraj());
+            }
+            else if(termin.getDatumPocetak() != null && !termin.getDatumPocetak().isEqual(trajeOd))
+                upis.add(termin.getDatumPocetak());
+
+            upis.add(termin.getDan());
+            upis.add(termin.getSatPocetka() + "-" + termin.getSatKraja());
+            upis.add(termin.getMesto());
+
+            csvPrinter.printRecord(upis);
+        }
+
+        csvPrinter.close();
+        fileWriter.close();
+
         return null;
     }
 
