@@ -1,8 +1,10 @@
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,11 +16,11 @@ public class Main {
         File file1 = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaJEDAN\\config");
         RasporedAC raspored = new RasporedImpl1(file1);
         File file = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\raspored111.csv");
-        LocalDate pocetak = null;
-        LocalDate kraj = null;
+        LocalDate pocetak = LocalDate.now();
+        LocalDate kraj = LocalDate.now();
         //File file2 = new File("C:\\Users\\I L I J A\\Desktop\\json1.json");
 
-        raspored.inicijalizacija("aaa",pocetak,kraj,null);
+        raspored.inicijalizacija("aaa",pocetak,kraj,null, LocalTime.parse("09:00"), LocalTime.parse("21:00"));
         raspored.CSVread(file);
         //raspored.JSONread(file);
 
@@ -26,6 +28,8 @@ public class Main {
         //System.out.println(raspored.getProstorije());
 
         System.out.println(raspored.getTermini());
+        //System.out.println("---------------------------");
+        //System.out.println("Slobodni termini: " + ((RasporedImpl1)raspored).filtrirajSlobodne("Med","22-2-2002"));
         /*System.out.println("-------------------");
         List<String> novTermin = new ArrayList<>();
         novTermin.add("zzz");
@@ -37,5 +41,16 @@ public class Main {
         //raspored.dodajProstoriju("Ucionica neka");
         raspored.dodajNovTermin(novTermin,true);
         System.out.println(raspored.getTermini());*/
+
+        //File filewrite = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\jsonWrite.json");
+        //rasporedAC.JSONread(filewrite);
+        //System.out.println(rasporedAC.getTermini());
+        //raspored.JsonWriter(filewrite);
+
+        try {
+            raspored.CsvWriter("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\csvwritetest.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -20,11 +20,9 @@ public class RasporedImpl2 extends RasporedAC{
 
     @Override
     public <T> T CSVread(File file) {
-        Reader reader = null;
         int jedanProlazk=0;
-
         try {
-            reader = new FileReader(file);  CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
+            Reader reader = new FileReader(file);  CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
             int kolone = 0;
             if (csvParser.iterator().hasNext()) {
                 kolone = csvParser.iterator().next().size();
@@ -95,8 +93,74 @@ public class RasporedImpl2 extends RasporedAC{
     }
 
     @Override
-    public <T> T dodajNovTermin(List<String> linija) {
+    public <T> T premestanjeTermina(Termin stariT, String kolona, String vrednost) {
 
+        String casee = "N";
+        Config cfg = null;
+        for(Config cus: this.getConfigs()){
+            if(cus.vratiOrginalCustom(kolona)) {
+                casee = cus.getOriginal();
+                cfg = cus;
+                break;
+            }
+        }
+        Termin novT = null;
+        switch (casee) {
+            case ("vreme"):{
+                List<String> vreme = parsirajVreme(vrednost);
+                LocalTime satPoc = LocalTime.parse(vreme.get(0));
+                LocalTime satKraj = LocalTime.parse(vreme.get(1));
+                novT = new Termin(satPoc, satKraj, stariT.getDan(), stariT.getMesto()
+                        , stariT.getDatumPocetak(), stariT.getDatumKraj());
+                novT.setOstalo(stariT.getOstalo());
+                break;
+            }case ("dan"):{
+                novT = new Termin(stariT.getSatPocetka(), stariT.getSatKraja(), vrednost, stariT.getMesto()
+                        , stariT.getDatumPocetak(), stariT.getDatumKraj());
+                novT.setOstalo(stariT.getOstalo());
+                break;
+            }case ("prostorija"):{
+                novT = new Termin(stariT.getSatPocetka(), stariT.getSatKraja(), stariT.getDan(), vrednost
+                        , stariT.getDatumPocetak(), stariT.getDatumKraj());
+                novT.setOstalo(stariT.getOstalo());
+                break;
+            }case ("start"):
+             case ("end"):{
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                String[] datumi = null;
+                if (vrednost.contains(":"))
+                    datumi = vrednost.split(":");
+                else return null;
+                LocalDate dP = dP = LocalDate.parse(parsirajDatum(datumi[0]),formatter);
+                LocalDate dK = dK = LocalDate.parse(parsirajDatum(datumi[1]),formatter);
+                novT = new Termin(stariT.getSatPocetka(), stariT.getSatKraja(),
+                        stariT.getDan(),stariT.getMesto(),dP, dK);
+                novT.setOstalo(stariT.getOstalo());
+                break;
+            }
+            default:{
+                List<Ostalo> ostalo = new ArrayList<>();
+                for(Ostalo ost : stariT.getOstalo())
+                    if(!ost.getKolona().equals(kolona))
+                        ostalo.add(ost);
+                    else
+                        ostalo.add(new Ostalo(kolona, vrednost));
+                novT = new Termin(stariT.getSatPocetka(), stariT.getSatKraja(),stariT.getDan(),
+                        stariT.getMesto(),stariT.getDatumPocetak(), stariT.getDatumKraj());
+                novT.setOstalo(ostalo);
+                break;
+            } }
+        proveriTermin(novT);
+        System.out.println("----------------STR-NOV--------------------");
+        System.out.println(stariT);
+        System.out.println(novT);
+        System.out.println("------------------------------------");
+        System.out.println(getTermini());
+        return null;
+    }
+
+    @Override
+    public <T> T dodajNovTermin(List<String> linija) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalTime satPoc = null;
         LocalTime satKraj = null;
@@ -151,18 +215,12 @@ public class RasporedImpl2 extends RasporedAC{
         return null;
     }
 
-    @Override
-    public <T> T premestanjeTermina(Termin termin, Termin terminDrugi) {
-        brisanjeTermina(termin);
-        proveriTermin(terminDrugi);
-        return null;
-    }
-
 
     @Override
     public boolean proveriTermin(Termin termin) {
-        if(!this.getProstorije().contains(termin.getMesto()))
-            return false;
+        System.out.println(termin.getMesto());
+        if (!this.getProstorije().contains(termin.getMesto()))
+             return false;
         for (Termin ter: this.getTermini())
             if (ter.getDan().equals(termin.getDan()) && ter.getMesto().equals(termin.getMesto())) {
                 if (!ter.getDatumKraj().isBefore(termin.getDatumPocetak()) &&
@@ -176,4 +234,5 @@ public class RasporedImpl2 extends RasporedAC{
         this.getTermini().add(termin);
         return true;
     }
+
 }

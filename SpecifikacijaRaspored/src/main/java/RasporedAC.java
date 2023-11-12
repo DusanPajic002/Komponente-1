@@ -1,15 +1,17 @@
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 @Getter
 @Setter
@@ -18,6 +20,8 @@ public abstract class RasporedAC {
     private String nazivRasporeda;
     private LocalDate trajeOd;
     private LocalDate trajeDo;
+    private LocalTime poctakRadnogVremena;
+    private LocalTime krajRadnogVremena;
     private List<String> prostorije;
     private List<String> kolone;
     private List<LocalDate> izuzetiDani;
@@ -34,11 +38,13 @@ public abstract class RasporedAC {
     public abstract <T> T CSVread(File file);
     public abstract <T> T JSONread(File file);
 
-    public <T> T inicijalizacija(String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani){
+    public <T> T inicijalizacija(String nazivRasporeda, LocalDate trajeOd, LocalDate trajeDo, List<LocalDate> izuzetiDani,LocalTime pocetakRadnogVremena, LocalTime krajRadnogVremena){
         this.setNazivRasporeda(nazivRasporeda);
         this.setTrajeOd(trajeOd);
         this.setTrajeDo(trajeDo);
         this.setIzuzetiDani(izuzetiDani);
+        this.setPoctakRadnogVremena(pocetakRadnogVremena);
+        this.setKrajRadnogVremena(krajRadnogVremena);
         return null;
     }
 
@@ -50,7 +56,72 @@ public abstract class RasporedAC {
         return null;
     }
 
-    public abstract <T> T dodajNovTermin(List<String> termin); //treba da ide uz proveru o zauzetosti termina
+    public abstract <T> T dodajNovTermin(List<String> termin);
+
+    public  <T> T JsonWriter(File filename) {
+        JSONArray jsonArray = new JSONArray();
+        try{
+            for(Termin t: this.termini){
+                Map<String, Object> orderedData = new LinkedHashMap<>();
+                int k = 0;
+                int sizeOs = t.getOstalo().size();
+                for(int i=0; i < sizeOs; i++)
+                    orderedData.put(t.getOstalo().get(i).getKolona(), t.getOstalo().get(i).getVrednost());
+
+                if(t.getDatumPocetak() != null && !t.getDatumPocetak().isEqual(trajeOd) && t.getDatumKraj() != null) {
+                    orderedData.put(kolone.get(sizeOs + k++), t.getDatumPocetak());
+                    orderedData.put(kolone.get(sizeOs + k++), t.getDatumKraj());
+                }
+                else if(t.getDatumPocetak() != null && !t.getDatumPocetak().isEqual(trajeOd))
+                    orderedData.put(kolone.get(sizeOs + k++), t.getDatumPocetak());
+
+                orderedData.put(kolone.get(sizeOs + k++), t.getDan());
+                orderedData.put(kolone.get(sizeOs + k++), t.getSatPocetka() + "-" + t.getSatKraja());
+                orderedData.put(kolone.get(sizeOs + k), t.getMesto());
+                jsonArray.add(orderedData);
+
+            }
+            FileWriter file = new FileWriter(filename);
+            file.write(jsonArray.toString());
+            file.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public  <T> T CsvWriter(String path) throws IOException {
+        FileWriter fileWriter = new FileWriter(path);
+        CSVPrinter csvPrinter = new CSVPrinter(fileWriter, CSVFormat.DEFAULT);
+
+        csvPrinter.printRecord(getKolone());
+
+        for(Termin termin: getTermini()){
+            List<Object> upis = new ArrayList<>();
+
+            for(int i=0; i< termin.getOstalo().size(); i++){
+                upis.add(termin.getOstalo().get(i).getVrednost());
+            }
+
+            if(termin.getDatumPocetak() != null && !termin.getDatumPocetak().isEqual(trajeOd) && termin.getDatumKraj() != null) {
+                upis.add(termin.getDatumPocetak());
+                upis.add(termin.getDatumKraj());
+            }
+            else if(termin.getDatumPocetak() != null && !termin.getDatumPocetak().isEqual(trajeOd))
+                upis.add(termin.getDatumPocetak());
+
+            upis.add(termin.getDan());
+            upis.add(termin.getSatPocetka() + "-" + termin.getSatKraja());
+            upis.add(termin.getMesto());
+
+            csvPrinter.printRecord(upis);
+        }
+
+        csvPrinter.close();
+        fileWriter.close();
+
+        return null;
+    }
 
     public <T> T brisanjeTermina(Termin termin) {
         if(getTermini().contains(termin))
@@ -74,7 +145,12 @@ public abstract class RasporedAC {
     }
     public abstract boolean proveriTermin(Termin termin);
 
-    public abstract <T> T premestanjeTermina(Termin termin, Termin terminDrugi);
+    public abstract  <T> T premestanjeTermina(Termin termin, String kolona, String vrednost);
+    public <T> T premestanjeTermina(Termin stari, Termin novi){
+        termini.remove(stari);
+        proveriTermin(novi);
+        return null;
+    }
 
     public List<Termin> filtriraj(String kolona, String vrednost){
         List<Termin> filtrirani = new ArrayList<>();
@@ -88,9 +164,9 @@ public abstract class RasporedAC {
                 break;
             }
         }
-        //Profesor Jefimija
+        if(casee.equals("N"))
+            return null;
         for (Termin t : termini){
-
             switch (casee) {
                 case ("vreme"):{
 

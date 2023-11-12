@@ -229,4 +229,56 @@ public class RasporedImpl1 extends RasporedAC{
 
         return zauzet;
     }
+
+    @Override
+    public <T> T premestanjeTermina(Termin termin, String kolona, String vrednost) {
+        return null;
+    }
+
+    public List<String> filtrirajSlobodne(String prostorija, String datum){
+        List<Termin> pom = new ArrayList<>();
+        List<String> slobodni = new ArrayList<>();
+
+        if(!getProstorije().contains(prostorija)){
+            slobodni.add("Izabrali ste nepostojecu prostoriju");
+            return slobodni;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate dP = LocalDate.parse(parsirajDatum(datum),formatter);
+
+        for (Termin t : getTermini())
+            if(t.getMesto().equals(prostorija) && dP.isEqual(t.getDatumPocetak()))
+                pom.add(t);
+
+        if(pom.isEmpty()){
+            slobodni.add(getPoctakRadnogVremena() + "-" + getKrajRadnogVremena());
+            return slobodni;
+        }
+        List<LocalTime[]> zauzeti = new ArrayList<>();
+
+        for(Termin t : pom)
+            zauzeti.add(new LocalTime[]{t.getSatPocetka(),t.getSatKraja()});
+
+        zauzeti.sort((z1,z2) -> z1[0].compareTo(z2[0]));
+
+        List<LocalTime[]> slobodniTermini = new ArrayList<>();
+        LocalTime tmp = getPoctakRadnogVremena();
+
+        for(LocalTime[] zauzet : zauzeti){
+            if(tmp.isBefore(zauzet[0]))
+                slobodniTermini.add(new LocalTime[]{tmp, zauzet[0]});
+            tmp = zauzet[1];
+        }
+
+        if(tmp.isBefore(getKrajRadnogVremena()))
+            slobodniTermini.add(new LocalTime[]{tmp,getKrajRadnogVremena()});
+
+
+
+        for(LocalTime[] lt : slobodniTermini)
+            slobodni.add(lt[0] + "-" + lt[1]);
+
+        return slobodni;
+    }
 }
