@@ -216,6 +216,23 @@ public abstract class RasporedAC {
         return filtrirani;
     }
 
+    public List<Termin> filtriranoPoDatumu(String datumPocetak, String datumKraj){
+        List<Termin> filtrirani = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate dP = LocalDate.parse(parsirajDatum(datumPocetak),formatter);
+        LocalDate dK = LocalDate.parse(parsirajDatum(datumKraj),formatter);
+
+        for (Termin t : getTermini())
+            if(t.getDatumPocetak().isAfter(dP) && t.getDatumKraj().isBefore(dK))
+                filtrirani.add(t);
+
+
+        return filtrirani;
+    }
+
+
+
+
 
     public List<String> parsirajVreme(String vreme){
         List<String> parsirano = new ArrayList<>();

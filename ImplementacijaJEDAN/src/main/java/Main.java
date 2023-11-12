@@ -28,8 +28,8 @@ public class Main {
         //System.out.println(raspored.getProstorije());
 
         System.out.println(raspored.getTermini());
-        //System.out.println("---------------------------");
-        //System.out.println("Slobodni termini: " + ((RasporedImpl1)raspored).filtrirajSlobodne("Med","22-2-2002"));
+        System.out.println("---------------------------");
+        System.out.println("Slobodni termini: " + ((RasporedImpl1)raspored).filtrirajSlobodne("Med","22-2-2002"));
         /*System.out.println("-------------------");
         List<String> novTermin = new ArrayList<>();
         novTermin.add("zzz");
