@@ -5,19 +5,18 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komp\\ImplementacijaDVA\\config");
-        //File cfg = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaDVA\\config");
+        File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\ImplementacijaDVA\\config");
         RasporedAC rasporedAC = new RasporedImpl2(cfg);
-        File file = new File("C:\\Users\\Korisnik\\Desktop\\Komp\\raspored.json");
-        //File file = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\raspored.json");
+        File file = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\raspored.json");
         LocalDate pocetak = LocalDate.now();
         LocalDate kraj = LocalDate.now();
-        rasporedAC.inicijalizacija("Test", pocetak, kraj,null);
+        rasporedAC.inicijalizacija("Test", pocetak, kraj,null,null,null);
         rasporedAC.JSONread(file);
+        System.out.println(rasporedAC.getTermini());
         //rasporedAC.filtriraj("Vreme", "11:14-17:01");
         //Termin t = rasporedAC.getTermini().get(0);
         //rasporedAC.premestanjeTermina(t,"U?ionica","Kolarac2");
-        System.out.println("-------------------");
+        /*System.out.println("-------------------");
         List<String> novTermin = new ArrayList<>();
         novTermin.add("Linearna algebra");              //1
         novTermin.add("V");                             //2
@@ -29,12 +28,14 @@ public class Main {
         novTermin.add("18:15-21:00");                   //8
         novTermin.add("Kolarac2");                      //9
         rasporedAC.dodajNovTermin(novTermin);
-        System.out.println(rasporedAC.getTermini());
+        System.out.println(rasporedAC.getTermini());*/
         System.out.println("-------------------");
-        File filewrite = new File("C:\\Users\\Korisnik\\Desktop\\Komp\\rasporedWrite.json");
+        rasporedAC.brisanjeTermina(rasporedAC.getTermini().get(6-1));
+        System.out.println(rasporedAC.getTermini());
+        //File filewrite = new File("C:\\Users\\Korisnik\\Desktop\\Komp\\rasporedWrite.json");
         //rasporedAC.JSONread(filewrite);
         //System.out.println(rasporedAC.getTermini());
-        rasporedAC.JsonWriter(filewrite);
+        //rasporedAC.JsonWriter(filewrite);
 
 
 

@@ -15,7 +15,6 @@ import java.util.Map;
 public class RasporedImpl2 extends RasporedAC{
     public RasporedImpl2(File fileConfig) {
         config(fileConfig);
-        System.out.println(this.getConfigs());
     }
 
     @Override
@@ -49,9 +48,6 @@ public class RasporedImpl2 extends RasporedAC{
                 }
                 dodajNovTermin(linija);
             }
-            System.out.println(this.getProstorije());
-            System.out.println(this.getKolone());
-            System.out.println(getTermini());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,9 +78,6 @@ public class RasporedImpl2 extends RasporedAC{
                 dodajNovTermin(nov);
             }
 
-            System.out.println(this.getProstorije());
-            System.out.println(this.getKolone());
-            System.out.println(getTermini());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -93,7 +86,7 @@ public class RasporedImpl2 extends RasporedAC{
     }
 
     @Override
-    public <T> T premestanjeTermina(Termin stariT, String kolona, String vrednost) {
+    public Termin premestanjeTermina(Termin stariT, String kolona, String vrednost) {
 
         String casee = "N";
         Config cfg = null;
@@ -150,13 +143,9 @@ public class RasporedImpl2 extends RasporedAC{
                 novT.setOstalo(ostalo);
                 break;
             } }
-        proveriTermin(novT);
-        System.out.println("----------------STR-NOV--------------------");
-        System.out.println(stariT);
-        System.out.println(novT);
-        System.out.println("------------------------------------");
-        System.out.println(getTermini());
-        return null;
+         if(!proveriTermin(novT))
+             return null;
+        return novT;
     }
 
     @Override
@@ -181,7 +170,6 @@ public class RasporedImpl2 extends RasporedAC{
                 }
             }
             if(casee.equals("N")) {
-                System.out.println("greska N");
                 return null;
             }
             switch (casee) {
@@ -218,7 +206,6 @@ public class RasporedImpl2 extends RasporedAC{
 
     @Override
     public boolean proveriTermin(Termin termin) {
-        System.out.println(termin.getMesto());
         if (!this.getProstorije().contains(termin.getMesto()))
              return false;
         for (Termin ter: this.getTermini())

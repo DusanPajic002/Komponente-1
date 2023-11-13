@@ -28,8 +28,8 @@ public class Main {
         //System.out.println(raspored.getProstorije());
 
         System.out.println(raspored.getTermini());
-        //System.out.println("---------------------------");
-        //System.out.println("Slobodni termini: " + ((RasporedImpl1)raspored).filtrirajSlobodne("Med","22-2-2002"));
+        System.out.println("---------------------------");
+        System.out.println("Slobodni termini: " + ((RasporedImpl1)raspored).filtrirajSlobodne("Med","22-2-2002"));
         /*System.out.println("-------------------");
         List<String> novTermin = new ArrayList<>();
         novTermin.add("zzz");
@@ -47,10 +47,10 @@ public class Main {
         //System.out.println(rasporedAC.getTermini());
         //raspored.JsonWriter(filewrite);
 
-        try {
+        /*try {
             raspored.CsvWriter("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\csvwritetest.csv");
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }
