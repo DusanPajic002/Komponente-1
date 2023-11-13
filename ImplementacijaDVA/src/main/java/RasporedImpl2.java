@@ -149,6 +149,11 @@ public class RasporedImpl2 extends RasporedAC{
     }
 
     @Override
+    public List<String> filtrirajSlobodne(String prostorija, String datum) {
+        return null;
+    }
+
+    @Override
     public <T> T dodajNovTermin(List<String> linija) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalTime satPoc = null;

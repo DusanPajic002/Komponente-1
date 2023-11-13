@@ -190,12 +190,6 @@ public class RasporedImpl1 extends RasporedAC{
     }
 
 
-    @Override
-    public <T> T premestanjeTermina(Termin termin, Termin terminDrugi) {
-        brisanjeTermina(termin);
-        proveriTermin(terminDrugi);
-        return null;
-    }
 
     @Override
     public boolean proveriTermin(Termin termin) {

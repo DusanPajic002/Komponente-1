@@ -78,7 +78,7 @@ public abstract class RasporedAC {
                     orderedData.put(kolone.get(sizeOs + k++), t.getDatumPocetak());
                     orderedData.put(kolone.get(sizeOs + k++), t.getDatumKraj());
                 }
-                else if(boolStart)
+                else if(boolStart && !boolEnd)
                     orderedData.put(kolone.get(sizeOs + k++), t.getDatumPocetak());
 
 
@@ -158,9 +158,13 @@ public abstract class RasporedAC {
     public abstract boolean proveriTermin(Termin termin);
 
     public abstract  Termin premestanjeTermina(Termin termin, String kolona, String vrednost);
-    public <T> T premestanjeTermina(Termin stari, Termin novi){
+
+    public abstract List<String> filtrirajSlobodne(String prostorija, String datum);
+
+    public <T> T premestanjeTermina(Termin stari, List<String> novi){
         termini.remove(stari);
-        proveriTermin(novi);
+        //proveriTermin(novi);
+        dodajNovTermin(novi);
         return null;
     }
 
@@ -234,7 +238,9 @@ public abstract class RasporedAC {
         LocalDate dK = LocalDate.parse(parsirajDatum(datumKraj),formatter);
 
         for (Termin t : getTermini())
-            if(t.getDatumPocetak().isAfter(dP) && t.getDatumKraj().isBefore(dK))
+            if(t.getDatumPocetak().isAfter(dP) && t.getDatumKraj() != null && t.getDatumKraj().isBefore(dK))
+                filtrirani.add(t);
+            else if(t.getDatumPocetak().isAfter(dP) && t.getDatumPocetak().isBefore(dK))
                 filtrirani.add(t);
 
         return filtrirani;
