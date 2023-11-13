@@ -47,10 +47,10 @@ public class Main {
         //System.out.println(rasporedAC.getTermini());
         //raspored.JsonWriter(filewrite);
 
-        try {
+        /*try {
             raspored.CsvWriter("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\csvwritetest.csv");
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

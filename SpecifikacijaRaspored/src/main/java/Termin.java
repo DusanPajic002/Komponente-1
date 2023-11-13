@@ -12,6 +12,8 @@ import java.util.Objects;
 @Setter
 public class Termin {
 
+    public static int i = 0;
+    private int brojTermina;
     private LocalTime satPocetka;
     private LocalTime satKraja;
     private String dan;
@@ -21,6 +23,8 @@ public class Termin {
     private LocalDate datumKraj;
 
     public Termin(LocalTime satPocetka, LocalTime satKraja, String dan, String mesto, LocalDate datumPocetak, LocalDate datumKraj) {
+        i++;
+        brojTermina = i;
         this.satPocetka = satPocetka;
         this.satKraja = satKraja;
         this.dan = dan;
@@ -45,7 +49,14 @@ public class Termin {
 
     @Override
     public String toString() {
-        return "Termin: " + ostalo + " | " + datumPocetak + " - " + datumKraj + " | " + satPocetka + " - " + satKraja + " | " + dan + " | "  + mesto + "|\n";
+        return brojTermina + ". " + pom()  + datumPocetak + " - " + datumKraj + " | " + satPocetka + " - " + satKraja + " | " + dan + " | "  + mesto + "|\n";
+    }
+
+    private String pom (){
+        StringBuilder sb = new StringBuilder();
+        for (Ostalo o: ostalo)
+            sb.append(o.getVrednost() + " | ");
+        return sb.toString();
     }
 
 }

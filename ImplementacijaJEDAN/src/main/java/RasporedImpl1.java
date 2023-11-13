@@ -191,13 +191,6 @@ public class RasporedImpl1 extends RasporedAC{
 
 
     @Override
-    public <T> T brisanjeTermina(Termin termin) {
-        if(getTermini().contains(termin))
-            getTermini().remove(termin);
-        return null;
-    }
-
-    @Override
     public <T> T premestanjeTermina(Termin termin, Termin terminDrugi) {
         brisanjeTermina(termin);
         proveriTermin(terminDrugi);
@@ -231,7 +224,7 @@ public class RasporedImpl1 extends RasporedAC{
     }
 
     @Override
-    public <T> T premestanjeTermina(Termin termin, String kolona, String vrednost) {
+    public Termin premestanjeTermina(Termin termin, String kolona, String vrednost) {
         return null;
     }
 

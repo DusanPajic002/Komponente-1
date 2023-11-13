@@ -90,42 +90,48 @@ public abstract class RasporedAC {
         return null;
     }
 
-    public  <T> T CsvWriter(String path) throws IOException {
-        FileWriter fileWriter = new FileWriter(path);
-        CSVPrinter csvPrinter = new CSVPrinter(fileWriter, CSVFormat.DEFAULT);
+    public  <T> T CsvWriter(String path){
+        try {
+            FileWriter fileWriter = new FileWriter(path);
 
-        csvPrinter.printRecord(getKolone());
+            CSVPrinter csvPrinter = new CSVPrinter(fileWriter, CSVFormat.DEFAULT);
 
-        for(Termin termin: getTermini()){
-            List<Object> upis = new ArrayList<>();
+            csvPrinter.printRecord(getKolone());
 
-            for(int i=0; i< termin.getOstalo().size(); i++){
-                upis.add(termin.getOstalo().get(i).getVrednost());
+            for(Termin termin: getTermini()){
+                List<Object> upis = new ArrayList<>();
+
+                for(int i=0; i< termin.getOstalo().size(); i++){
+                    upis.add(termin.getOstalo().get(i).getVrednost());
+                }
+
+                if(termin.getDatumPocetak() != null && !termin.getDatumPocetak().isEqual(trajeOd) && termin.getDatumKraj() != null) {
+                    upis.add(termin.getDatumPocetak());
+                    upis.add(termin.getDatumKraj());
+                }
+                else if(termin.getDatumPocetak() != null && !termin.getDatumPocetak().isEqual(trajeOd))
+                    upis.add(termin.getDatumPocetak());
+
+                upis.add(termin.getDan());
+                upis.add(termin.getSatPocetka() + "-" + termin.getSatKraja());
+                upis.add(termin.getMesto());
+
+                csvPrinter.printRecord(upis);
             }
 
-            if(termin.getDatumPocetak() != null && !termin.getDatumPocetak().isEqual(trajeOd) && termin.getDatumKraj() != null) {
-                upis.add(termin.getDatumPocetak());
-                upis.add(termin.getDatumKraj());
-            }
-            else if(termin.getDatumPocetak() != null && !termin.getDatumPocetak().isEqual(trajeOd))
-                upis.add(termin.getDatumPocetak());
-
-            upis.add(termin.getDan());
-            upis.add(termin.getSatPocetka() + "-" + termin.getSatKraja());
-            upis.add(termin.getMesto());
-
-            csvPrinter.printRecord(upis);
+            csvPrinter.close();
+            fileWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        csvPrinter.close();
-        fileWriter.close();
-
         return null;
     }
 
     public <T> T brisanjeTermina(Termin termin) {
-        if(getTermini().contains(termin))
-            getTermini().remove(termin);
+        termini.remove(termin);
+        for(int i =0; i< termini.size(); i++)
+            termini.get(i).setBrojTermina(i+1);
+        Termin.i = termini.size();
         return null;
     }
 
@@ -145,7 +151,7 @@ public abstract class RasporedAC {
     }
     public abstract boolean proveriTermin(Termin termin);
 
-    public abstract  <T> T premestanjeTermina(Termin termin, String kolona, String vrednost);
+    public abstract  Termin premestanjeTermina(Termin termin, String kolona, String vrednost);
     public <T> T premestanjeTermina(Termin stari, Termin novi){
         termini.remove(stari);
         proveriTermin(novi);
@@ -210,8 +216,7 @@ public abstract class RasporedAC {
             }
         }
 
-        System.out.println("-----------------------------------------");
-        System.out.println(filtrirani);
+
 
         return filtrirani;
     }
@@ -226,13 +231,8 @@ public abstract class RasporedAC {
             if(t.getDatumPocetak().isAfter(dP) && t.getDatumKraj().isBefore(dK))
                 filtrirani.add(t);
 
-
         return filtrirani;
     }
-
-
-
-
 
     public List<String> parsirajVreme(String vreme){
         List<String> parsirano = new ArrayList<>();
