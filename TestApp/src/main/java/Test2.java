@@ -18,7 +18,7 @@ public class Test2 {
     private void test() {
 
         //File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\ImplementacijaDVA\\config");
-        File cfg = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaDVA\\config");
+        File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\ImplementacijaDVA\\config");
         rasporedAC = new RasporedImpl2(cfg);
 
         System.out.println("Unesite naziv rasporeda:");

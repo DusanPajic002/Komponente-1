@@ -67,19 +67,25 @@ public abstract class RasporedAC {
                 int sizeOs = t.getOstalo().size();
                 for(int i=0; i < sizeOs; i++)
                     orderedData.put(t.getOstalo().get(i).getKolona(), t.getOstalo().get(i).getVrednost());
-
-                if(t.getDatumPocetak() != null && !t.getDatumPocetak().isEqual(trajeOd) && t.getDatumKraj() != null) {
+                boolean boolStart = false;
+                boolean boolEnd = false;
+                for(Config cfg: configs)
+                    if(cfg.getOriginal().equals("start"))
+                        boolStart = true;
+                    else if(cfg.getOriginal().equals("end"))
+                        boolEnd = true;
+                if(boolStart && boolEnd) {
                     orderedData.put(kolone.get(sizeOs + k++), t.getDatumPocetak());
                     orderedData.put(kolone.get(sizeOs + k++), t.getDatumKraj());
                 }
-                else if(t.getDatumPocetak() != null && !t.getDatumPocetak().isEqual(trajeOd))
+                else if(boolStart)
                     orderedData.put(kolone.get(sizeOs + k++), t.getDatumPocetak());
+
 
                 orderedData.put(kolone.get(sizeOs + k++), t.getDan());
                 orderedData.put(kolone.get(sizeOs + k++), t.getSatPocetka() + "-" + t.getSatKraja());
                 orderedData.put(kolone.get(sizeOs + k), t.getMesto());
                 jsonArray.add(orderedData);
-
             }
             FileWriter file = new FileWriter(filename);
             file.write(jsonArray.toString());
