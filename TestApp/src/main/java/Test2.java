@@ -10,13 +10,15 @@ import java.util.Scanner;
 public class Test2 {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private RasporedAC rasporedAC = null;
+    Scanner scanner = new Scanner(System.in);
     public Test2(){
         test();
     }
 
     private void test() {
-        Scanner scanner = new Scanner(System.in);
-        File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\ImplementacijaDVA\\config");
+
+        //File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\ImplementacijaDVA\\config");
+        File cfg = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaDVA\\config");
         rasporedAC = new RasporedImpl2(cfg);
 
         System.out.println("Unesite naziv rasporeda:");
@@ -104,6 +106,7 @@ public class Test2 {
                     break;
                 }
                 case ("0"):{
+                    scanner.close();
                     return;
                 } default:{
                     System.out.println("Nije dobro uneto, unesite samo redni broj");
@@ -114,7 +117,7 @@ public class Test2 {
     }
     private void jedan(){
         List<String> termin = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
+        //Scanner scanner = new Scanner(System.in);
         String line;
         int k = 0;
         boolean datumi = false;
@@ -151,11 +154,9 @@ public class Test2 {
         termin.add(line);
 
         rasporedAC.dodajNovTermin(termin);
-        scanner.close();
     }
     private void dva(){
         System.out.println("Unesite redni broj termina kog zelite da obrisete");
-        Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
         int brojKaoInt = 0;
         try {
@@ -168,11 +169,9 @@ public class Test2 {
             System.out.println("String nije broj");
         }
         rasporedAC.brisanjeTermina(rasporedAC.getTermini().get(brojKaoInt - 1));
-        scanner.close();
     }
     private void tri(){
         List<String> pretraga = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
 
         System.out.println("Unesite naziv kolone");
         String line = scanner.nextLine();
@@ -185,11 +184,9 @@ public class Test2 {
         List<Termin> termini =  rasporedAC.filtriraj(pretraga.get(0), pretraga.get(1));
         for(Termin t: termini)
             System.out.println(t);
-        scanner.close();
     }
     private void cetri(){
         List<String> pretraga = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
 
         System.out.println("Unesite datum od kada filtrirate (Format | dd-mm-yyyy)");
         String line = scanner.nextLine();
@@ -202,11 +199,9 @@ public class Test2 {
         List<Termin> termini =  rasporedAC.filtriranoPoDatumu(pretraga.get(0), pretraga.get(1));
         for(Termin t: termini)
             System.out.println(t);
-        scanner.close();
     }
     private void pet(){/// (Format | termin, kolona, vrednost)
         System.out.println("Unesite redni broj termina koji zelite da premestite");
-        Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
         int brojKaoInt = 0;
         try {
@@ -229,26 +224,23 @@ public class Test2 {
         System.out.println(rasporedAC.getTermini().get(brojKaoInt-1));
         System.out.println(rasporedAC.premestanjeTermina(rasporedAC.getTermini().get(brojKaoInt-1), kolona, vrednost));
         System.out.println("------------------------------------");
-        scanner.close();
     }
     private void sedam(){
         System.out.println("Izaberite opciju");
         System.out.println("1. CSV");
         System.out.println("2. JSON");
-        Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
         String provera = line;
         System.out.println("Unesite putanju do fajla u koji zelite da radite Export");
         line = scanner.nextLine();
         File file = new File(line);
-        if(provera.contains("1"))
+        if(provera.contains("2"))
             rasporedAC.JsonWriter(file);
-        else if(provera.contains("2"))
+        else if(provera.contains("1"))
             rasporedAC.CsvWriter(line);
         else
             System.out.println("Los unos");
 
-        scanner.close();
     }
 
 
