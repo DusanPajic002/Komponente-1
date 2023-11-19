@@ -79,7 +79,7 @@ public abstract class RasporedAC {
                     orderedData.put(kolone.get(sizeOs + k++), t.getDatumKraj());
                 }
                 else if(boolStart && !boolEnd)
-                    orderedData.put(kolone.get(sizeOs + k++), t.getDatumPocetak());
+                    orderedData.put(kolone.get(sizeOs + k++), "\"" + t.getDatumPocetak() + "\"");
 
 
                 orderedData.put(kolone.get(sizeOs + k++), t.getDan());

@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 public class RasporedImpl2 extends RasporedAC{
+
+    static{
+        Manager.setObj(new RasporedImpl2(new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaDVA\\config")));
+    }
     public RasporedImpl2(File fileConfig) {
         config(fileConfig);
     }

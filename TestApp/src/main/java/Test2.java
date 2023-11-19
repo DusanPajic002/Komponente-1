@@ -1,4 +1,3 @@
-import javax.sound.midi.Soundbank;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,7 +18,13 @@ public class Test2 {
 
         //File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\ImplementacijaDVA\\config");
         File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\ImplementacijaDVA\\config");
-        rasporedAC = new RasporedImpl2(cfg);
+        //rasporedAC = new RasporedImpl2(cfg);
+        try {
+            Class.forName("RasporedImpl2");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        rasporedAC = Manager.getSpecRasporedImpl();
 
         System.out.println("Unesite naziv rasporeda:");
         String line = scanner.nextLine();
