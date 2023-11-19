@@ -1,5 +1,3 @@
-
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -21,7 +19,10 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class RasporedImpl1 extends RasporedAC{
+public class RasporedImpl1 extends RasporedAC {
+    static{
+        Manager.setObj(new RasporedImpl1(new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaJEDAN\\config")));
+    }
 
     public RasporedImpl1(File fileConfig) {
         config(fileConfig);

@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\ImplementacijaDVA\\config");
+        File cfg = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaDVA\\config");
         RasporedAC rasporedAC = new RasporedImpl2(cfg);
-        File file = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\raspored.json");
+        File file = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\raspored.json");
         LocalDate pocetak = LocalDate.now();
         LocalDate kraj = LocalDate.now();
         rasporedAC.inicijalizacija("Test", pocetak, kraj,null,null,null);
@@ -30,12 +30,12 @@ public class Main {
         rasporedAC.dodajNovTermin(novTermin);
         System.out.println(rasporedAC.getTermini());*/
         System.out.println("-------------------");
-        rasporedAC.brisanjeTermina(rasporedAC.getTermini().get(6-1));
-        System.out.println(rasporedAC.getTermini());
-        //File filewrite = new File("C:\\Users\\Korisnik\\Desktop\\Komp\\rasporedWrite.json");
+        //rasporedAC.brisanjeTermina(rasporedAC.getTermini().get(6-1));
+        //System.out.println(rasporedAC.getTermini());
+        File filewrite = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\rasporedWrite123.json");
         //rasporedAC.JSONread(filewrite);
         //System.out.println(rasporedAC.getTermini());
-        //rasporedAC.JsonWriter(filewrite);
+        rasporedAC.JsonWriter(filewrite);
 
 
 

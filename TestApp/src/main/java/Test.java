@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Test {
+public class Test{
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    private RasporedAC rasporedAC = null;
+    private RasporedAC rasporedAC;
     Scanner scanner = new Scanner(System.in);
     public Test() {
         test();
@@ -18,8 +18,15 @@ public class Test {
     private void test() {
 
         //File cfg = new File("C:\\Users\\Korisnik\\Desktop\\Komponente\\ImplementacijaDVA\\config");
-        File cfg = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaJEDAN\\config");
-        rasporedAC = new RasporedImpl1(cfg);
+        //File cfg = new File("C:\\Users\\I L I J A\\Desktop\\Komponente-1\\ImplementacijaJEDAN\\config");
+        //rasporedAC = new RasporedImpl1(cfg);
+
+        try {
+            Class.forName("RasporedImpl1");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        rasporedAC = Manager.getSpecRasporedImpl();
 
         System.out.println("Unesite naziv rasporeda:");
         String line = scanner.nextLine();
