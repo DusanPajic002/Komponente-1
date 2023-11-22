@@ -56,7 +56,7 @@ public abstract class RasporedAC {
         return null;
     }
 
-    public abstract <T> T dodajNovTermin(List<String> termin);
+    public abstract boolean dodajNovTermin(List<String> termin);
 
     public  <T> T JsonWriter(File filename) {
         JSONArray jsonArray = new JSONArray();
@@ -163,6 +163,9 @@ public abstract class RasporedAC {
 
     public <T> T premestanjeTermina(Termin stari, List<String> novi){
         termini.remove(stari);
+        for(int i =0; i< termini.size(); i++)
+            termini.get(i).setBrojTermina(i+1);
+        Termin.i = termini.size();
         //proveriTermin(novi);
         dodajNovTermin(novi);
         return null;

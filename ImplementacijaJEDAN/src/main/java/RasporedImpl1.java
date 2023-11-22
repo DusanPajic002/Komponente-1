@@ -53,8 +53,6 @@ public class RasporedImpl1 extends RasporedAC {
                 }
                 dodajProstoriju(csvRecord.get(brojKolona-1));
             }
-            System.out.println(this.getKolone());
-            System.out.println(this.getProstorije());
             reader.close();
             reader = new BufferedReader(new FileReader(file));
             csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
@@ -92,11 +90,20 @@ public class RasporedImpl1 extends RasporedAC {
         try {
             List<Map<String, String>> data = objectMapper.readValue(file, new TypeReference<List<Map<String, String>>>() {});
             int prviprolazak = 0;
+
+            for (Map<String,String> appointmentData : data){
+                List<String> nov = new ArrayList<>();
+                nov.addAll(appointmentData.values());
+                dodajProstoriju(nov.get(nov.size()-1));
+            }
             for (Map<String, String> appointmentData : data){
                 if(prviprolazak++ == 0)
                     getKolone().addAll(appointmentData.keySet());
 
-                dodajNovTermin((List<String>) appointmentData.values());
+
+                List<String> nov = new ArrayList<>();
+                nov.addAll(appointmentData.values());
+                dodajNovTermin(nov);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -108,31 +115,9 @@ public class RasporedImpl1 extends RasporedAC {
 
 
 
-    /*@Override
-    public <T> T dodajNovTermin(List<String> termin) {
-
-        int brKolona = termin.size();
-            List<Ostalo> zaOstalo = new ArrayList<>();
-            for(int i=0; i < brKolona - 4; i++)
-                zaOstalo.add(new Ostalo(getKolone().get(i),termin.get(i)));
-
-            // 11:00-13:00
-            List<String> vreme = parsirajVreme(termin.get(brKolona-2));
-            String dan = termin.get(brKolona-3);
-            String dateString = termin.get(brKolona-4);
-            String prostorija = termin.get(brKolona-1);
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDate date = LocalDate.parse(dateString, formatter);
-
-            Termin termin1 = new Termin(LocalTime.parse(vreme.get(0)),LocalTime.parse(vreme.get(1)),dan,prostorija,date,null);
-            termin1.setOstalo(zaOstalo);
-            proveriTermin(termin1);
-        return null;
-    }*/
-
     @Override
-    public <T> T dodajNovTermin(List<String> linija) {
+    public boolean dodajNovTermin(List<String> linija) {
+
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalTime satPoc = null;
@@ -154,8 +139,7 @@ public class RasporedImpl1 extends RasporedAC {
                 }
             }
             if(casee.equals("N")) {
-                System.out.println("greska N");
-                return null;
+                return true;
             }
             switch (casee) {
                 case ("vreme"):{
@@ -186,8 +170,7 @@ public class RasporedImpl1 extends RasporedAC {
         }
         Termin t = new Termin(satPoc, satKraj, dan, prostorija, dP, dK);
         t.setOstalo(ost);
-        proveriTermin(t);
-        return null;
+        return proveriTermin(t);
     }
 
 
@@ -197,6 +180,7 @@ public class RasporedImpl1 extends RasporedAC {
 
         if(!getProstorije().contains(termin.getMesto()))
             return false;
+
 
         List<Termin> saIstomProstorijom = new ArrayList<>();
 
@@ -212,16 +196,14 @@ public class RasporedImpl1 extends RasporedAC {
 
         if(zauzet == false)
             getTermini().add(termin);
-        else
-            System.out.println("zauzet");
+
+        //else
+            //System.out.println("zauzet");
 
         return zauzet;
     }
 
-    @Override
-    public Termin premestanjeTermina(Termin termin, String kolona, String vrednost) {
-        return null;
-    }
+
 
     public List<String> filtrirajSlobodne(String prostorija, String datum){
         List<Termin> pom = new ArrayList<>();
@@ -268,5 +250,10 @@ public class RasporedImpl1 extends RasporedAC {
             slobodni.add(lt[0] + "-" + lt[1]);
 
         return slobodni;
+    }
+
+    @Override
+    public Termin premestanjeTermina(Termin termin, String kolona, String vrednost) {
+        return null;
     }
 }
