@@ -131,18 +131,15 @@ public class Test{
     private void jedan(){
         List<String> termin = new ArrayList<>();
         String line;
-        int k = 0;
         boolean dan = false;
         for (Config cfg: rasporedAC.getConfigs())
-            if(cfg.getOriginal().equals("ostalo"))
-                k++;
-            else if(cfg.getOriginal().equals("dan"))
+            if(cfg.getOriginal().equals("ostalo")){
+                    System.out.println("Unesite " + cfg.getCustom().toLowerCase());
+                    line = scanner.nextLine();
+                    termin.add(line);
+            } else if(cfg.getOriginal().equals("dan"))
                 dan = true;
-        for(int i=0; i<k; i++){
-            System.out.println("Unesite rednom osobine");
-            line = scanner.nextLine();
-            termin.add(line);
-        }
+
 
         System.out.println("Unesite datum za termin (Format | dd-mm-yyyy)");
         line = scanner.nextLine();
@@ -162,7 +159,9 @@ public class Test{
         line = scanner.nextLine();
         termin.add(line);
 
-        rasporedAC.dodajNovTermin(termin);
+        if(rasporedAC.dodajNovTermin(termin))
+            System.out.println("Nije moguce dodati ovaj termin");
+
     }
 
     private void dva(){

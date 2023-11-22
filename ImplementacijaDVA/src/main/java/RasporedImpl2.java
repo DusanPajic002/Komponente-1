@@ -158,7 +158,7 @@ public class RasporedImpl2 extends RasporedAC{
     }
 
     @Override
-    public <T> T dodajNovTermin(List<String> linija) {
+    public boolean dodajNovTermin(List<String> linija) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalTime satPoc = null;
         LocalTime satKraj = null;
@@ -179,7 +179,7 @@ public class RasporedImpl2 extends RasporedAC{
                 }
             }
             if(casee.equals("N")) {
-                return null;
+                return true;
             }
             switch (casee) {
                 case ("vreme"):{
@@ -208,27 +208,26 @@ public class RasporedImpl2 extends RasporedAC{
         }
         Termin t = new Termin(satPoc, satKraj, dan, prostorija, dP, dK);
         t.setOstalo(ost);
-        proveriTermin(t);
-        return null;
+        return proveriTermin(t);
     }
 
 
     @Override
     public boolean proveriTermin(Termin termin) {
         if (!this.getProstorije().contains(termin.getMesto()))
-             return false;
+             return true;
         for (Termin ter: this.getTermini())
             if (ter.getDan().equals(termin.getDan()) && ter.getMesto().equals(termin.getMesto())) {
                 if (!ter.getDatumKraj().isBefore(termin.getDatumPocetak()) &&
                         !ter.getDatumPocetak().isAfter(termin.getDatumKraj())) {
                     if (!ter.getSatKraja().isBefore(termin.getSatPocetka()) &&
                             !ter.getSatPocetka().isAfter(termin.getSatKraja())) {
-                        return false;
+                        return true;
                     }
                 }
             }
         this.getTermini().add(termin);
-        return true;
+        return false;
     }
 
 }

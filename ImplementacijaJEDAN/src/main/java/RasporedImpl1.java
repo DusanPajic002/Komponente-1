@@ -53,8 +53,6 @@ public class RasporedImpl1 extends RasporedAC {
                 }
                 dodajProstoriju(csvRecord.get(brojKolona-1));
             }
-            System.out.println(this.getKolone());
-            System.out.println(this.getProstorije());
             reader.close();
             reader = new BufferedReader(new FileReader(file));
             csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
@@ -132,7 +130,7 @@ public class RasporedImpl1 extends RasporedAC {
     }*/
 
     @Override
-    public <T> T dodajNovTermin(List<String> linija) {
+    public boolean dodajNovTermin(List<String> linija) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalTime satPoc = null;
@@ -155,7 +153,7 @@ public class RasporedImpl1 extends RasporedAC {
             }
             if(casee.equals("N")) {
                 System.out.println("greska N");
-                return null;
+                return true;
             }
             switch (casee) {
                 case ("vreme"):{
@@ -186,8 +184,7 @@ public class RasporedImpl1 extends RasporedAC {
         }
         Termin t = new Termin(satPoc, satKraj, dan, prostorija, dP, dK);
         t.setOstalo(ost);
-        proveriTermin(t);
-        return null;
+        return proveriTermin(t);
     }
 
 
@@ -212,8 +209,9 @@ public class RasporedImpl1 extends RasporedAC {
 
         if(zauzet == false)
             getTermini().add(termin);
-        else
-            System.out.println("zauzet");
+
+        //else
+            //System.out.println("zauzet");
 
         return zauzet;
     }

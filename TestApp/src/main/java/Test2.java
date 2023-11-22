@@ -21,9 +21,10 @@ public class Test2 {
         //rasporedAC = new RasporedImpl2(cfg);
         try {
             Class.forName("RasporedImpl2");
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         rasporedAC = Manager.getSpecRasporedImpl();
 
         System.out.println("Unesite naziv rasporeda:");
@@ -127,15 +128,13 @@ public class Test2 {
         int k = 0;
         boolean datumi = false;
         for (Config cfg: rasporedAC.getConfigs())
-            if(cfg.getOriginal().equals("ostalo"))
-                k++;
-            else if (cfg.getOriginal().equals("end") || cfg.getOriginal().equals("start") )
+            if(cfg.getOriginal().equals("ostalo")) {
+                System.out.println("Unesite " + cfg.getCustom().toLowerCase());
+                line = scanner.nextLine();
+                termin.add(line);
+            } else if (cfg.getOriginal().equals("end") || cfg.getOriginal().equals("start") )
                 datumi = true;
-        for(int i=0; i<k; i++){
-            System.out.println("Unesite vrednom osobine");
-            line = scanner.nextLine();
-            termin.add(line);
-        }
+
 
         if(datumi){
             System.out.println("Unesite datum od kada vazi termin (Format | dd-mm-yyyy)");
@@ -158,7 +157,8 @@ public class Test2 {
         line = scanner.nextLine();
         termin.add(line);
 
-        rasporedAC.dodajNovTermin(termin);
+        if(rasporedAC.dodajNovTermin(termin))
+            System.out.println("Nije moguce dodati ovaj termin");
     }
     private void dva(){
         System.out.println("Unesite redni broj termina kog zelite da obrisete");
