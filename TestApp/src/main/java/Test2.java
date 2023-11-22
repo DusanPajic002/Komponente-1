@@ -77,8 +77,9 @@ public class Test2 {
             System.out.println("3. Filtriraj po tacnoj vrednosti");
             System.out.println("4. Filtriraj po datumu u odredjenom periodu");
             System.out.println("5. Premesti termin");
-            System.out.println("6. Stampaj raspored");
-            System.out.println("7. Export fajla");
+            System.out.println("6. Dodaj prostoriju");
+            System.out.println("7. Stampaj raspored");
+            System.out.println("8. Export fajla");
             System.out.println("0. Izadji");
             String opcija = scanner.nextLine();
             switch (opcija){
@@ -103,12 +104,16 @@ public class Test2 {
                     break;
                 }
                 case ("6"):{
+                    sest();
+                    break;
+                }
+                case ("7"):{
                     for(Termin t: rasporedAC.getTermini())
                         System.out.println(t);
                     break;
                 }
-                case ("7"):{
-                    sedam();
+                case ("8"):{
+                    osam();
                     break;
                 }
                 case ("0"):{
@@ -230,7 +235,17 @@ public class Test2 {
         System.out.println(rasporedAC.premestanjeTermina(rasporedAC.getTermini().get(brojKaoInt-1), kolona, vrednost));
         System.out.println("------------------------------------");
     }
-    private void sedam(){
+
+    private void sest(){
+        System.out.println("Unesite naziv prostorije koju zelite da dodate:");
+        String line = scanner.nextLine();
+        if(rasporedAC.getProstorije().contains(line))
+            System.out.println("Prostorija vec postoji u listi prostorija");
+        else
+            rasporedAC.dodajProstoriju(line);
+    }
+
+    private void osam(){
         System.out.println("Izaberite opciju");
         System.out.println("1. CSV");
         System.out.println("2. JSON");

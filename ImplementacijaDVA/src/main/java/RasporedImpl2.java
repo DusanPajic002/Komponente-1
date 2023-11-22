@@ -101,6 +101,9 @@ public class RasporedImpl2 extends RasporedAC{
                 break;
             }
         }
+        if(casee.equals("N")) {
+            return null;
+        }
         Termin novT = null;
         switch (casee) {
             case ("vreme"):{

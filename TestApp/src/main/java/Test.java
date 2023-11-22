@@ -28,7 +28,8 @@ public class Test{
         }
         rasporedAC = Manager.getSpecRasporedImpl();
 
-        System.out.println("Unesite naziv rasporeda:");
+
+        /*System.out.println("Unesite naziv rasporeda:");
         String line = scanner.nextLine();
         String nazivRasporeda = line;
 
@@ -61,8 +62,15 @@ public class Test{
 
         rasporedAC.inicijalizacija(nazivRasporeda,dP,dK,izuzetiDani,satPoc,satKraj);
         System.out.println("Uredu, sada unesite putanju do fajla:");
-        line = scanner.nextLine();
+        line = scanner.nextLine();*/
+        LocalDate dK = LocalDate.parse("03-10-2023",formatter);
+        LocalDate dP = LocalDate.parse("21-06-2024",formatter);
+        LocalTime satPoc = LocalTime.parse("09:00");
+        LocalTime satKraj = LocalTime.parse("21:00");
+        rasporedAC.inicijalizacija("fddsa",dP,dK,null,satPoc,satKraj);
+        String line = "C:\\Users\\I L I J A\\Desktop\\Komponente-1\\rasporedimpl1.json";
         File file = new File(line);
+
         if(line.contains(".json"))
             rasporedAC.JSONread(file);
         else if(line.contains(".csv"))
@@ -79,8 +87,9 @@ public class Test{
             System.out.println("4. Filtriraj po datumu u odredjenom periodu");
             System.out.println("5. Filtriraj slobodne termine za prostoriju");
             System.out.println("6. Premesti termin");
-            System.out.println("7. Stampaj raspored");
-            System.out.println("8. Export fajla");
+            System.out.println("7. Dodaj prostoriju");
+            System.out.println("8. Stampaj raspored");
+            System.out.println("9. Export fajla");
             System.out.println("0. Izadji");
             String opcija = scanner.nextLine();
             switch (opcija){
@@ -107,14 +116,17 @@ public class Test{
                 case ("6"):{
                     sest();
                     break;
+                }case ("7"):{
+                    sedam();
+                    break;
                 }
-                case ("7"):{
+                case ("8"):{
                     for(Termin t: rasporedAC.getTermini())
                         System.out.println(t);
                     break;
                 }
-                case ("8"):{
-                    osam();
+                case ("9"):{
+                    devet();
                     break;
                 }
                 case ("0"):{
@@ -282,7 +294,16 @@ public class Test{
         rasporedAC.premestanjeTermina(rasporedAC.getTermini().get(brojKaoInt-1), termin);
     }
 
-    private void osam(){
+    private void sedam(){
+        System.out.println("Unesite naziv prostorije koju zelite da dodate:");
+        String line = scanner.nextLine();
+        if(rasporedAC.getProstorije().contains(line))
+            System.out.println("Prostorija vec postoji u listi prostorija");
+        else
+         rasporedAC.dodajProstoriju(line);
+    }
+
+    private void devet(){
         System.out.println("Izaberite opciju");
         System.out.println("1. CSV");
         System.out.println("2. JSON");
